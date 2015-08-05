@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/gr8craft
+worker: sh target/universal/stage/bin/gr8craft
