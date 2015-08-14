@@ -6,7 +6,9 @@ import gr8craft.twitter.{TwitterApiService, TwitterService}
 
 class ApplicationRunner(scheduler: Scheduler, twitterService: TwitterService, shelf: Shelf) {
   def startTwitterBot() = {
-    println("start bot")
+    scheduler.isTriggered
+    val article = shelf.first
+    twitterService.tweet("Your hourly recommended article about " + article.topic + ": " + article.location)
   }
 
   def stop = {

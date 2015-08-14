@@ -1,8 +1,7 @@
 package gr8craft.article
 
-class Article(_name: String, _url: String) {
+class Article(_topic: String, _location: String) {
+  def topic = _topic
 
-  def name = _name
-
-  def url = _url
+  def location = _location
 }
