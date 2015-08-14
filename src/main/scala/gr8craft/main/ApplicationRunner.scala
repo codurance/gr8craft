@@ -1,13 +1,17 @@
 package gr8craft.main
 
-import gr8craft.article.Shelf
+import gr8craft.article.{InMemoryShelf, Shelf}
 import gr8craft.scheduling.Scheduler
 import gr8craft.twitter.{TwitterApiService, TwitterService}
 
 class ApplicationRunner(scheduler: Scheduler, twitterService: TwitterService, shelf: Shelf) {
-  def startTwitterBot() = {}
+  def startTwitterBot() = {
+    println("start bot")
+  }
 
-  def stop = {}
+  def stop = {
+    println("stop bot")
+  }
 
 }
 
@@ -18,7 +22,7 @@ object ApplicationRunner {
   }
 
   def main(args: Array[String]) {
-    val application = new ApplicationRunner(createScheduler, new TwitterApiService(), new Shelf(Seq.empty))
+    val application = new ApplicationRunner(createScheduler, new TwitterApiService(), new InMemoryShelf(Seq.empty))
     application.startTwitterBot
   }
 }

@@ -5,5 +5,8 @@ class TwitterApiService() extends TwitterService {
 
   def getNewestTweet: String = tweet
 
-  override def tweet(tweet: String): Unit = this.tweet = tweet
+  override def tweet(tweet: String): Unit = {
+    this.tweet = tweet
+    println(tweet)
+  }
 }

@@ -13,5 +13,6 @@ libraryDependencies ++= Seq(
   "junit" % "junit" % "4.12" % "test",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "info.cukes" %% "cucumber-scala" % "1.2.4" % "test",
-  "info.cukes" % "cucumber-junit" % "1.2.4" % "test"
+  "info.cukes" % "cucumber-junit" % "1.2.4" % "test",
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % "test"
 )
