@@ -6,12 +6,28 @@ import gr8craft.main.ApplicationRunner
 import gr8craft.scheduling.FakeScheduler
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
+import org.scalatest.concurrent.AsyncAssertions.Waiter
+import org.scalatest.concurrent.Eventually
+import twitter4j.{Status, TwitterFactory}
+import scala.concurrent.duration._
 
-class StepDefinitions extends ScalaDsl with EN with Matchers {
+import scala.collection.JavaConverters._
+
+class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   val scheduler = new FakeScheduler
-  val twitterService = new TwitterApiService
+  private val twitter = TwitterFactory.getSingleton
+  val twitterService = new TwitterApiService(twitter)
 
   var application: ApplicationRunner = null
+
+  Before() { _ =>
+    twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
+  }
+
+  After() { _ =>
+    application.stop()
+  }
+
 
   Given( """^the clock shows (\d+):(\d+)$""") { (hour: Int, minute: Int) =>
     scheduler.setTime(hour, minute)
@@ -24,13 +40,14 @@ class StepDefinitions extends ScalaDsl with EN with Matchers {
 
   When( """^the clock reaches (\d+):(\d+)$""") { (hour: Int, minute: Int) =>
     scheduler.setTime(hour, minute)
-    application.startTwitterBot
+    application.startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    twitterService.getNewestTweet shouldEqual expectedTweet
+    val newestTweet = eventually(timeout(5.seconds), interval(1.second)) {
+      val newestTweet: Option[Status] = twitter.getUserTimeline.asScala.headOption
+      newestTweet.map(_.getText)
+    }
+    newestTweet.get shouldEqual expectedTweet
   }
-
-  After() { _ => application.stop }
-
 }
