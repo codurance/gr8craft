@@ -1,12 +1,11 @@
 package gr8craft.twitter
 
-class TwitterApiService() extends TwitterService {
+import twitter4j.Twitter
+
+class TwitterApiService(twitter: Twitter) extends TwitterService {
   var tweet: String = null
 
-  def getNewestTweet: String = tweet
-
-  override def tweet(tweet: String): Unit = {
-    this.tweet = tweet
-    println(tweet)
+  override def tweet(tweet: String) {
+    twitter.updateStatus(tweet)
   }
 }
