@@ -1,8 +1,8 @@
 package gr8craft.features
 
 import cucumber.api.scala.{EN, ScalaDsl}
+import gr8craft.ApplicationRunner
 import gr8craft.article.{Article, InMemoryShelf}
-import gr8craft.main.ApplicationRunner
 import gr8craft.scheduling.FakeScheduler
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers

@@ -1,5 +1,5 @@
+import gr8craft.ApplicationRunner
 import gr8craft.article.{Article, Shelf}
-import gr8craft.main.ApplicationRunner
 import gr8craft.scheduling.Scheduler
 import gr8craft.twitter.TwitterService
 import org.scalamock.scalatest.MockFactory

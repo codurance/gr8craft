@@ -1,4 +1,4 @@
-package gr8craft.main
+package gr8craft
 
 import gr8craft.article.{Article, InMemoryShelf, Shelf}
 import gr8craft.scheduling.{ScheduledExecutor, Scheduler}
