@@ -26,11 +26,12 @@ class ApplicationRunnerShould extends FunSuite with MockFactory with BeforeAndAf
     (twitterService.tweet _).verify("Your hourly recommended article about " + topic + ": " + location)
   }
 
-  test("don't tweet if not scheduled") {
+  test("don't tweet until scheduled") {
     (scheduler.isTriggered _).expects().returning(false)
 
     applicationRunner.startTwitterBot
   }
+
 
   after {
     applicationRunner.stop
