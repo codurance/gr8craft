@@ -6,7 +6,6 @@ import gr8craft.main.ApplicationRunner
 import gr8craft.scheduling.FakeScheduler
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
-import org.scalatest.concurrent.AsyncAssertions.Waiter
 import org.scalatest.concurrent.Eventually
 import twitter4j.{Status, TwitterFactory}
 import scala.concurrent.duration._
