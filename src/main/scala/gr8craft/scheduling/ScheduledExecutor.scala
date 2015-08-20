@@ -1,22 +1,10 @@
 package gr8craft.scheduling
 
-import java.util.concurrent.{Executors, TimeUnit}
+import java.util.concurrent.Executors.newSingleThreadScheduledExecutor
+import java.util.concurrent.TimeUnit
 
-class ScheduledExecutor extends Scheduler {
-  var triggered: Boolean = false
-
-  def scheduled: Runnable = new Runnable {
-    override def run(): Unit = triggered = true
+class ScheduledExecutor(timeUnit: TimeUnit, runnable: Runnable) extends Scheduler {
+  def schedule() {
+    newSingleThreadScheduledExecutor().schedule(runnable, 1L, timeUnit)
   }
-
-  val executor = Executors.newSingleThreadScheduledExecutor()
-  executor.schedule(scheduled, 1L, TimeUnit.HOURS)
-
-  override def isTriggered: Boolean = {
-    val wasTriggered = triggered
-    triggered = false
-    wasTriggered
-  }
-
-
 }
