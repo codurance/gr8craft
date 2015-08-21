@@ -36,7 +36,7 @@ class ScheduledExecutorShould extends FunSuite with Matchers with Eventually wit
   }
 
   def ensureRunnableWasScheduled: Unit = {
-    eventually(timeout(5.nanoseconds), interval(1.nanosecond)) {
+    eventually(timeout(5.seconds), interval(1.seconds)) {
       wasScheduled shouldBe true
     }
   }
