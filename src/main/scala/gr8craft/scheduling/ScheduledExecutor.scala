@@ -16,7 +16,7 @@ class ScheduledExecutor(timeUnit: TimeUnit, runnable: Runnable) extends Schedule
     log.info("shutting down execution...")
 
     executor.shutdown()
-    executor.awaitTermination(1, SECONDS)
+    executor.awaitTermination(10, SECONDS)
 
     log.info("shutdown of execution complete")
   }
