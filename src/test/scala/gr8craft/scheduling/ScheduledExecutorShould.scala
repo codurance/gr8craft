@@ -22,22 +22,22 @@ class ScheduledExecutorShould extends FunSuite with Matchers with Eventually wit
   test("schedule the runnable") {
     scheduler.schedule()
 
-    eventually(timeout(5.nanoseconds), interval(1.nanosecond)) {
-      wasScheduled shouldBe true
-    }
+    ensureRunnableWasScheduled
     scheduler.isShutDown shouldBe false
   }
 
   test("shutdown the runnable") {
     scheduler.schedule()
-    eventually(timeout(5.nanoseconds), interval(1.nanosecond)) {
-      wasScheduled shouldBe true
-    }
+    ensureRunnableWasScheduled
 
     scheduler.shutdown()
 
+    scheduler.isShutDown shouldBe true
+  }
+
+  def ensureRunnableWasScheduled: Unit = {
     eventually(timeout(5.nanoseconds), interval(1.nanosecond)) {
-      scheduler.isShutDown shouldBe true
+      wasScheduled shouldBe true
     }
   }
 }
