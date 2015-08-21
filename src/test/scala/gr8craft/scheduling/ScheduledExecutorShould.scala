@@ -1,10 +1,15 @@
 package gr8craft.scheduling
 
 import java.util.concurrent.TimeUnit.NANOSECONDS
-import scala.concurrent.duration._
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{OneInstancePerTest, BeforeAndAfter, FunSuite, Matchers}
 
+import org.junit.runner.RunWith
+import org.scalatest.concurrent.Eventually
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.{BeforeAndAfter, FunSuite, Matchers, OneInstancePerTest}
+
+import scala.concurrent.duration._
+
+@RunWith(classOf[JUnitRunner])
 class ScheduledExecutorShould extends FunSuite with Matchers with Eventually with BeforeAndAfter with OneInstancePerTest {
 
   var wasScheduled = false

@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.article.{Shelf, Article, InMemoryShelf}
+import gr8craft.article.{Article, InMemoryShelf, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
 import org.scalatest.Matchers

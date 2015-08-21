@@ -1,9 +1,12 @@
 package gr8craft.twitter
 
 import gr8craft.article.{Article, Shelf}
+import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.FunSuite
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class TweetRunnerShould extends FunSuite with MockFactory {
   val topic = "topic"
   val location = "location"
