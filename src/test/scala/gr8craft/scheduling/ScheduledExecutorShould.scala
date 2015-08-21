@@ -36,6 +36,8 @@ class ScheduledExecutorShould extends FunSuite with Matchers with Eventually wit
 
     scheduler.shutdown()
 
-    scheduler.isShutDown shouldBe true
+    eventually(timeout(5.nanoseconds), interval(1.nanosecond)) {
+      scheduler.isShutDown shouldBe true
+    }
   }
 }
