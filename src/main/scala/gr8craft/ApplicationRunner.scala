@@ -21,10 +21,14 @@ class ApplicationRunner(scheduler: Scheduler) {
 object ApplicationRunner {
 
   def main(args: Array[String]) {
-    val articles: List[Article] = List(new Article("dummy topic", "dummy URL"))
-    val tweetRunner: TweetRunner = new TweetRunner(new TwitterApiService(getSingleton), new InMemoryShelf(articles))
-    val application = new ApplicationRunner(new ScheduledExecutor(HOURS, tweetRunner))
+    val application: ApplicationRunner = assembleApplication
 
     application.startTwitterBot()
+  }
+
+  def assembleApplication: ApplicationRunner = {
+    val articles: List[Article] = List(new Article("dummy topic", "dummy URL"))
+    val tweetRunner: TweetRunner = new TweetRunner(new TwitterApiService(getSingleton), new InMemoryShelf(articles))
+    new ApplicationRunner(new ScheduledExecutor(HOURS, tweetRunner))
   }
 }

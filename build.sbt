@@ -10,6 +10,8 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % "4.0.4",
+  "org.slf4s" %% "slf4s-api" % "1.7.12",
+  "ch.qos.logback" % "logback-classic" % "1.1.2",
 
   "junit" % "junit" % "4.12" % "test",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
