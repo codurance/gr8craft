@@ -3,7 +3,6 @@ Feature: Hourly Article Tweet
   I want hourly tweets to software design articles in my timeline
   so that they inspire me to do better design
 
-  @end-to-end
   Scenario: Hour reached
     Given the next article on the shelf about "DDD" can be found at "http://t.co/lqJDZlGcJE"
     When the hour is reached

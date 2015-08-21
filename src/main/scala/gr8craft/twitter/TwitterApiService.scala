@@ -1,7 +1,7 @@
 package gr8craft.twitter
 
 import org.slf4s.Logging
-import twitter4j.{TwitterException, Twitter}
+import twitter4j.{Twitter, TwitterException}
 
 class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
   var tweet: String = null
