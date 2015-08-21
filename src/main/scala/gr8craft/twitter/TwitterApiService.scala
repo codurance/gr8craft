@@ -11,7 +11,7 @@ class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
       sendToTwitter(tweet)
     }
     catch {
-      case twitterException: TwitterException => log.error(twitterException.getErrorMessage)
+      case twitterException: TwitterException => log.error("Error while tweeting: " + twitterException.getErrorMessage + "\n" + twitterException.getStackTrace)
     }
   }
 
