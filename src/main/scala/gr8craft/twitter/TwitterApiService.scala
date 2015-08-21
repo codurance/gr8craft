@@ -11,7 +11,7 @@ class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
       sendToTwitter(tweet)
     }
     catch {
-      case twitterException: TwitterException => log.error("Error while tweeting: " + twitterException.getErrorMessage + "\n" + twitterException.getStackTrace)
+      case twitterException: TwitterException => logException(twitterException)
     }
   }
 
@@ -20,6 +20,10 @@ class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
 
     twitter.updateStatus(tweet)
 
-    log.info("successfully tweeted" + tweet)
+    log.info("successfully tweeted " + tweet)
+  }
+
+  def logException(twitterException: TwitterException): Unit = {
+    log.error("Error while tweeting: " + twitterException.getErrorMessage, twitterException)
   }
 }
