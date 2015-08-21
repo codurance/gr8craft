@@ -40,7 +40,7 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    val newestTweet = eventually(timeout(5.seconds), interval(1.second)) {
+    val newestTweet = eventually(timeout(10.seconds), interval(1.second)) {
       val newestTweet: Option[Status] = twitter.getUserTimeline.asScala.headOption
       newestTweet.map(_.getText)
     }
