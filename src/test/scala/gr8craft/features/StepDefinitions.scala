@@ -1,22 +1,24 @@
 package gr8craft.features
 
+import java.util.concurrent.TimeUnit
+
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.article.{Article, InMemoryShelf}
-import gr8craft.scheduling.FakeScheduler
-import gr8craft.twitter.TwitterApiService
+import gr8craft.article.{Shelf, Article, InMemoryShelf}
+import gr8craft.scheduling.ScheduledExecutor
+import gr8craft.twitter.{TweetRunner, TwitterApiService}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
 import twitter4j.{Status, TwitterFactory}
-import scala.concurrent.duration._
 
 import scala.collection.JavaConverters._
+import scala.concurrent.duration._
 
 class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
-  val scheduler = new FakeScheduler
+
   private val twitter = TwitterFactory.getSingleton
   val twitterService = new TwitterApiService(twitter)
-
+  var shelf: Shelf = null
   var application: ApplicationRunner = null
 
   Before() { _ =>
@@ -27,18 +29,13 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
     application.stop()
   }
 
-
-  Given( """^the clock shows (\d+):(\d+)$""") { (hour: Int, minute: Int) =>
-    scheduler.setTime(hour, minute)
-  }
-
   Given( """^the next article on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, articleLocation: String) =>
-    val shelf = InMemoryShelf(Seq(new Article(topic, articleLocation)))
-    this.application = new ApplicationRunner(scheduler, twitterService, shelf)
+    shelf = InMemoryShelf(Seq(new Article(topic, articleLocation)))
   }
 
-  When( """^the clock reaches (\d+):(\d+)$""") { (hour: Int, minute: Int) =>
-    scheduler.setTime(hour, minute)
+  When( """^the hour is reached$""") { () =>
+    val scheduler = new ScheduledExecutor(TimeUnit.SECONDS, new TweetRunner(twitterService, shelf));
+    this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }
 

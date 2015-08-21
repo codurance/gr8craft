@@ -1,39 +1,21 @@
 import gr8craft.ApplicationRunner
-import gr8craft.article.{Article, Shelf}
 import gr8craft.scheduling.Scheduler
-import gr8craft.twitter.TwitterService
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfter, FunSuite}
 
 
-class ApplicationRunnerShould extends FunSuite with MockFactory with BeforeAndAfter {
-  val topic = "topic"
-  val location = "location"
-
-  val scheduler = mock[Scheduler]
-  val shelf = mock[Shelf]
-  val twitterService = stub[TwitterService]
-
-  val applicationRunner = new ApplicationRunner(scheduler, twitterService, shelf)
+class ApplicationRunnerShould extends FunSuite with MockFactory {
+  val scheduler = stub[Scheduler]
+  val applicationRunner = new ApplicationRunner(scheduler)
 
 
-  test("tweet the first article from the shelf if scheduled") {
-    (scheduler.isTriggered _).expects().returning(true)
-    (shelf.first _).expects().returns(new Article(topic, location))
-
-    applicationRunner.startTwitterBot
-
-    (twitterService.tweet _).verify("Your hourly recommended article about " + topic + ": " + location)
+  test("schedule the execution") {
+    applicationRunner.startTwitterBot()
+    (scheduler.schedule _).verify()
   }
 
-  test("don't tweet until scheduled") {
-    (scheduler.isTriggered _).expects().returning(false)
-
-    applicationRunner.startTwitterBot
-  }
-
-
-  after {
-    applicationRunner.stop
+  test("stop the execution") {
+    applicationRunner.stop()
+    (scheduler.shutdown _).verify()
   }
 }

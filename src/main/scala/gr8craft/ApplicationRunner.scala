@@ -1,30 +1,30 @@
 package gr8craft
 
-import gr8craft.article.{Article, InMemoryShelf, Shelf}
-import gr8craft.scheduling.{ScheduledExecutor, Scheduler}
-import gr8craft.twitter.{TwitterApiService, TwitterService}
-import twitter4j.TwitterFactory
+import java.util.concurrent.TimeUnit.HOURS
 
-class ApplicationRunner(scheduler: Scheduler, twitterService: TwitterService, shelf: Shelf) {
+import gr8craft.article.{Article, InMemoryShelf}
+import gr8craft.scheduling.{ScheduledExecutor, Scheduler}
+import gr8craft.twitter.{TweetRunner, TwitterApiService}
+import twitter4j.TwitterFactory.getSingleton
+
+class ApplicationRunner(scheduler: Scheduler) {
   def startTwitterBot() {
-    if (scheduler.isTriggered) {
-      val article = shelf.first
-      twitterService.tweet("Your hourly recommended article about " + article.topic + ": " + article.location)
-    }
+    scheduler.schedule()
   }
 
   def stop() {
-    println("stop bot")
+    scheduler.shutdown()
   }
 
 }
 
 object ApplicationRunner {
 
-
   def main(args: Array[String]) {
     val articles: List[Article] = List(new Article("dummy topic", "dummy URL"))
-    val application = new ApplicationRunner(new ScheduledExecutor, new TwitterApiService(TwitterFactory.getSingleton), new InMemoryShelf(articles))
+    val tweetRunner: TweetRunner = new TweetRunner(new TwitterApiService(getSingleton), new InMemoryShelf(articles))
+    val application = new ApplicationRunner(new ScheduledExecutor(HOURS, tweetRunner))
+
     application.startTwitterBot()
   }
 }

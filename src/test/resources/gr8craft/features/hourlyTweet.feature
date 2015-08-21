@@ -4,7 +4,6 @@ Feature: Hourly Article Tweet
   so that they inspire me to do better design
 
   Scenario: Hour reached
-    Given the clock shows 12:50
     Given the next article on the shelf about "DDD" can be found at "http://t.co/lqJDZlGcJE"
-    When the clock reaches 13:00
+    When the hour is reached
     Then gr8craft tweets "Your hourly recommended article about DDD: http://t.co/lqJDZlGcJE"
