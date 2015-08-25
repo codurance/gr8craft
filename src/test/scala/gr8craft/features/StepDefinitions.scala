@@ -52,10 +52,10 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   def createTwitterService: Twitter = {
     val configuration = new ConfigurationBuilder()
       .setDebugEnabled(true)
-      .setOAuthConsumerKey(sys.env("twitter4jconsumerKey"))
-      .setOAuthConsumerSecret(sys.env("twitter4jconsumerSecret"))
-      .setOAuthAccessToken(sys.env("twitter4jaccessToken"))
-      .setOAuthAccessTokenSecret(sys.env("twitter4jaccessTokenSecret"))
+      .setOAuthConsumerKey(sys.env("twitter4jconsumerKey4testing"))
+      .setOAuthConsumerSecret(sys.env("twitter4jconsumerSecret4testing"))
+      .setOAuthAccessToken(sys.env("twitter4jaccessToken4testing"))
+      .setOAuthAccessTokenSecret(sys.env("twitter4jaccessTokenSecret4testing"))
       .build()
 
     new TwitterFactory(configuration).getInstance()
