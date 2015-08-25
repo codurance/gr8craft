@@ -3,7 +3,8 @@ package gr8craft.features
 import java.util.concurrent.TimeUnit
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import gr8craft.ApplicationRunner
+import gr8craft.TwitterFactoryWithConfiguration.createTwitter
+import gr8craft.{TwitterFactoryWithConfiguration, ApplicationRunner}
 import gr8craft.article.{Article, InMemoryShelf, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
@@ -17,7 +18,7 @@ import scala.concurrent.duration._
 
 class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
 
-  private val twitter = createTwitterService
+  val twitter = createTwitter("4testing")
   val twitterService = new TwitterApiService(twitter)
   var shelf: Shelf = null
   var application: ApplicationRunner = null
@@ -49,15 +50,5 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
     newestTweet.get shouldEqual expectedTweet
   }
 
-  def createTwitterService: Twitter = {
-    val configuration = new ConfigurationBuilder()
-      .setDebugEnabled(true)
-      .setOAuthConsumerKey(sys.env("twitter4jconsumerKey4testing"))
-      .setOAuthConsumerSecret(sys.env("twitter4jconsumerSecret4testing"))
-      .setOAuthAccessToken(sys.env("twitter4jaccessToken4testing"))
-      .setOAuthAccessTokenSecret(sys.env("twitter4jaccessTokenSecret4testing"))
-      .build()
 
-    new TwitterFactory(configuration).getInstance()
-  }
 }
