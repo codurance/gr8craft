@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 class ScheduledExecutorShould extends FunSuite with Matchers with Eventually with BeforeAndAfter with OneInstancePerTest {
 
   var wasScheduled = false
-  val scheduler = new ScheduledExecutor(NANOSECONDS, new Runnable {
+  val scheduler = new ScheduledExecutor(1.nanosecond, new Runnable {
     override def run(): Unit = wasScheduled = true
   })
 

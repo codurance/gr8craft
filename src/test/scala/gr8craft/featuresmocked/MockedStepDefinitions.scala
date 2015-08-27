@@ -38,7 +38,7 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   }
 
   When( """^the hour is reached$""") { () =>
-    val scheduler = new ScheduledExecutor(TimeUnit.SECONDS, new TweetRunner(twitterService, shelf));
+    val scheduler = new ScheduledExecutor(1.second, new TweetRunner(twitterService, shelf));
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }
