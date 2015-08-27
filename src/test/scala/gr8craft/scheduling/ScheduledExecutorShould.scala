@@ -1,7 +1,5 @@
 package gr8craft.scheduling
 
-import java.util.concurrent.TimeUnit.NANOSECONDS
-
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.Eventually
 import org.scalatest.junit.JUnitRunner

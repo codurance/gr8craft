@@ -1,19 +1,13 @@
 package gr8craft.featuresmocked
 
-import java.util.concurrent.TimeUnit
-
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.article.{Article, InMemoryShelf, Shelf}
+import gr8craft.article.{Article, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
-import gr8craft.twitter.{TwitterService, TweetRunner, TwitterApiService}
-import org.scalamock.scalatest.MockFactory
+import gr8craft.twitter.{TweetRunner, TwitterService}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
-import twitter4j.Status
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventually {

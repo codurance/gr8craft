@@ -1,17 +1,14 @@
 package gr8craft.features
 
-import java.util.concurrent.TimeUnit
-
 import cucumber.api.scala.{EN, ScalaDsl}
+import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.{TwitterFactoryWithConfiguration, ApplicationRunner}
 import gr8craft.article.{Article, InMemoryShelf, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
-import twitter4j.conf.ConfigurationBuilder
-import twitter4j.{Twitter, Status, TwitterFactory}
+import twitter4j.Status
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._

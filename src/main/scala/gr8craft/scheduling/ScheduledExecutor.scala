@@ -1,12 +1,12 @@
 package gr8craft.scheduling
 
 import java.util.concurrent.Executors.newSingleThreadScheduledExecutor
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit.SECONDS
-import java.util.concurrent.{ScheduledExecutorService, TimeUnit}
 
 import org.slf4s.Logging
 
-import scala.concurrent.duration.{FiniteDuration, Duration}
+import scala.concurrent.duration.Duration
 
 
 class ScheduledExecutor(duration: Duration, runnable: Runnable) extends Scheduler with Logging {
