@@ -33,13 +33,13 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   }
 
   When( """^the hour is reached$""") { () =>
-    val scheduler = new ScheduledExecutor(1.second, new TweetRunner(twitterService, shelf));
+    val scheduler = new ScheduledExecutor(1.second, new TweetRunner(twitterService, shelf).run());
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    val newestTweet = eventually(timeout(10.seconds), interval(1.second)) {
+    val newestTweet = eventually(timeout(1000.seconds), interval(1.second)) {
       val newestTweet: Option[Status] = twitter.getUserTimeline.asScala.headOption
       newestTweet.isDefined shouldBe true
       newestTweet.map(_.getText)

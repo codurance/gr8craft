@@ -2,9 +2,10 @@ package gr8craft.twitter
 
 import gr8craft.article.Shelf
 
-class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Runnable {
-  override def run(): Unit = {
+class TweetRunner(twitterService: TwitterService, shelf: Shelf) {
+
+  def run() = { () =>
     val article = shelf.first
-    twitterService.tweet("Your hourly recommended article about " + article.topic + ": " + article.location)
+    twitterService.tweet(s"Your hourly recommended article about ${article.topic}: ${article.location}")
   }
 }

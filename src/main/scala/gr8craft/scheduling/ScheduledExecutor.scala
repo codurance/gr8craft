@@ -9,7 +9,7 @@ import org.slf4s.Logging
 import scala.concurrent.duration.Duration
 
 
-class ScheduledExecutor(duration: Duration, runnable: Runnable) extends Scheduler with Logging {
+class ScheduledExecutor(duration: Duration, funToRun: () => Unit) extends Scheduler with Logging {
   def isShutDown = executor.isTerminated
 
   val executor: ScheduledExecutorService = newSingleThreadScheduledExecutor()
@@ -25,6 +25,8 @@ class ScheduledExecutor(duration: Duration, runnable: Runnable) extends Schedule
 
   def schedule() {
     log.info(s"Scheduling every $duration.")
-    executor.scheduleAtFixedRate(runnable, 0, duration.length, duration.unit)
+    executor.scheduleAtFixedRate(new Runnable {
+      def run() = funToRun()
+    }, 0, duration.length, duration.unit)
   }
 }

@@ -20,7 +20,7 @@ class TweetRunnerShould extends FunSuite with MockFactory {
   test("tweet the first article from the shelf") {
     (shelf.first _).expects().returns(new Article(topic, location))
 
-    tweetRunner.run()
+    tweetRunner.run().apply()
 
     (twitterService.tweet _).verify("Your hourly recommended article about " + topic + ": " + location)
   }

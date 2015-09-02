@@ -29,6 +29,6 @@ object ApplicationRunner {
   def assembleApplication: ApplicationRunner = {
     val articles: List[Article] = List(new Article("Interaction Driven Design", "http://www.ustream.tv/recorded/61480606"))
     val tweetRunner: TweetRunner = new TweetRunner(new TwitterApiService(createTwitter()), new InMemoryShelf(articles))
-    new ApplicationRunner(new ScheduledExecutor(1.hour, tweetRunner))
+    new ApplicationRunner(new ScheduledExecutor(1.hour, tweetRunner.run()))
   }
 }
