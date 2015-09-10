@@ -1,25 +1,25 @@
 package gr8craft
 
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.article.{Article, InMemoryShelf}
-import gr8craft.scheduling.{ScheduledExecutor, Scheduler}
+import gr8craft.messages.{Stop, Start}
+import gr8craft.scheduling._
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
 
 import scala.concurrent.duration._
 
-class ApplicationRunner(scheduler: Scheduler) {
+class ApplicationRunner(scheduler: ActorRef) {
   def startTwitterBot() {
-    scheduler.schedule()
+    scheduler ! Start
   }
 
   def stop() {
-    scheduler.shutdown()
+    scheduler ! Stop
   }
-
 }
 
 object ApplicationRunner {
-
   def main(args: Array[String]) {
     val application: ApplicationRunner = assembleApplication
 
@@ -27,8 +27,11 @@ object ApplicationRunner {
   }
 
   def assembleApplication: ApplicationRunner = {
-    val articles: List[Article] = List(new Article("Interaction Driven Design", "http://www.ustream.tv/recorded/61480606"))
-    val tweetRunner: TweetRunner = new TweetRunner(new TwitterApiService(createTwitter()), new InMemoryShelf(articles))
-    new ApplicationRunner(new ScheduledExecutor(1.hour, tweetRunner.run()))
+    val articles = List(new Article("Interaction Driven Design", "http://www.ustream.tv/recorded/61480606"))
+    val twitterService = new TwitterApiService(createTwitter())
+    val system = ActorSystem("Gr8craftSystem")
+    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, new InMemoryShelf(articles))))
+    val scheduler = system.actorOf(Props(new ScheduledExecutor(1.hour, tweetRunner)))
+    new ApplicationRunner(scheduler)
   }
 }

@@ -1,5 +1,6 @@
 package gr8craft.featuresmocked
 
+import akka.actor.{Props, ActorSystem}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.article.{Article, Shelf}
@@ -21,6 +22,8 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   var shelf: Shelf = null
   var application: ApplicationRunner = null
 
+  val system = ActorSystem("MockedGr8craftFeatureSpecifications")
+
   After() { _ =>
     application.stop()
   }
@@ -32,7 +35,8 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   }
 
   When( """^the hour is reached$""") { () =>
-    val scheduler = new ScheduledExecutor(1.second, new TweetRunner(twitterService, shelf).run());
+    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, shelf)))
+    val scheduler = system.actorOf(Props(new ScheduledExecutor(1.second, tweetRunner)))
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }

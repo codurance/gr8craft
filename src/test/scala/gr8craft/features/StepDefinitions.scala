@@ -1,5 +1,6 @@
 package gr8craft.features
 
+import akka.actor.{Props, ActorSystem}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
@@ -19,6 +20,7 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   val twitterService = new TwitterApiService(twitter)
   var shelf: Shelf = null
   var application: ApplicationRunner = null
+  val system = ActorSystem("EndToEndGr8craftFeatureSpecifications")
 
   Before() { _ =>
     twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
@@ -33,7 +35,8 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   }
 
   When( """^the hour is reached$""") { () =>
-    val scheduler = new ScheduledExecutor(1.second, new TweetRunner(twitterService, shelf).run());
+    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, shelf)))
+    val scheduler = system.actorOf(Props(new ScheduledExecutor(1.second, tweetRunner)))
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }

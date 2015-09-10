@@ -1,39 +1,52 @@
 package gr8craft.scheduling
 
+import akka.actor.{ActorSystem, Props}
+import akka.pattern.{Patterns, ask}
+import akka.testkit.{DefaultTimeout, JavaTestKit, TestActorRef, TestKit}
+import gr8craft.messages.{Trigger, IsTerminated, Stop, Start}
 import org.junit.runner.RunWith
-import org.scalatest.concurrent.Eventually
+import org.scalatest._
+import org.scalatest.concurrent.{ScalaFutures, JavaFutures, Futures}
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfter, FunSuite, Matchers, OneInstancePerTest}
 
+import scala.concurrent.{Future, Await}
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 @RunWith(classOf[JUnitRunner])
-class ScheduledExecutorShould extends FunSuite with Matchers with Eventually with BeforeAndAfter with OneInstancePerTest {
+class ScheduledExecutorShould extends TestKit(ActorSystem("ScheduledExecutorShould")) with FunSuiteLike with DefaultTimeout with Matchers with BeforeAndAfterAll with OneInstancePerTest with ScalaFutures {
+  val toBeScheduled = new JavaTestKit(system)
+  val scheduler = TestActorRef(Props(new ScheduledExecutor(1.nanosecond, toBeScheduled.getRef)))
 
-  var wasScheduled = false
-  val scheduler = new ScheduledExecutor(1.nanosecond, () => wasScheduled = true)
-
-  after(scheduler.shutdown())
-
-  test("schedule the runnable") {
-    scheduler.schedule()
-
-    ensureRunnableWasScheduled
-    scheduler.isShutDown shouldBe false
+  override def afterAll() {
+    scheduler ! Stop
   }
 
-  test("shutdown the runnable") {
-    scheduler.schedule()
-    ensureRunnableWasScheduled
+  test("send trigger message to actor to be scheduled") {
+    scheduler ! Start
 
-    scheduler.shutdown()
+    ensureTriggerMessageWasSent()
 
-    scheduler.isShutDown shouldBe true
+    ensureSchedulerIsTerminatedIs(false)
   }
 
-  def ensureRunnableWasScheduled: Unit = {
-    eventually(timeout(5.seconds), interval(1.seconds)) {
-      wasScheduled shouldBe true
+  test("stop the scheduler") {
+    scheduler ! Start
+    ensureTriggerMessageWasSent()
+
+    scheduler ! Stop
+
+    ensureSchedulerIsTerminatedIs(true)
+  }
+
+  def ensureSchedulerIsTerminatedIs(isTerminated: Boolean): Unit = {
+    whenReady(Patterns.ask(scheduler, IsTerminated, 2000)) { answer =>
+      answer shouldBe isTerminated
     }
   }
+
+  def ensureTriggerMessageWasSent(): Unit = {
+    toBeScheduled.expectMsgEquals(1.second, Trigger)
+  }
+
 }
