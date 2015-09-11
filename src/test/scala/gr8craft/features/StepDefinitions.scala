@@ -1,6 +1,6 @@
 package gr8craft.features
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter

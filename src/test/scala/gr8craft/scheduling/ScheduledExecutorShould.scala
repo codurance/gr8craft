@@ -1,20 +1,19 @@
 package gr8craft.scheduling
 
 import akka.actor.{ActorSystem, Props}
-import akka.pattern.{Patterns, ask}
+import akka.pattern.Patterns
 import akka.testkit.{DefaultTimeout, JavaTestKit, TestActorRef, TestKit}
-import gr8craft.messages.{Trigger, IsTerminated, Stop, Start}
+import gr8craft.messages.{IsTerminated, Start, Stop, Trigger}
 import org.junit.runner.RunWith
 import org.scalatest._
-import org.scalatest.concurrent.{ScalaFutures, JavaFutures, Futures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 
-import scala.concurrent.{Future, Await}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 @RunWith(classOf[JUnitRunner])
 class ScheduledExecutorShould extends TestKit(ActorSystem("ScheduledExecutorShould")) with FunSuiteLike with DefaultTimeout with Matchers with BeforeAndAfterAll with OneInstancePerTest with ScalaFutures {
+
   val toBeScheduled = new JavaTestKit(system)
   val scheduler = TestActorRef(Props(new ScheduledExecutor(1.nanosecond, toBeScheduled.getRef)))
 

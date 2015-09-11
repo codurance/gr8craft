@@ -1,6 +1,6 @@
 package gr8craft.featuresmocked
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.article.{Article, Shelf}
@@ -42,7 +42,7 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    val newestTweet = eventually(timeout(10.seconds), interval(1.second)) {
+    eventually(timeout(10.seconds), interval(1.second)) {
       twitterService.tweetSent should not be null
     }
     twitterService.tweetSent shouldBe expectedTweet

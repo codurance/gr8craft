@@ -1,9 +1,9 @@
 package gr8craft
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.article.{Article, InMemoryShelf}
-import gr8craft.messages.{Stop, Start}
+import gr8craft.messages.{Start, Stop}
 import gr8craft.scheduling._
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
 

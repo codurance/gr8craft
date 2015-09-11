@@ -4,9 +4,8 @@ import java.util.concurrent.Executors.newSingleThreadScheduledExecutor
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit.SECONDS
 
-import akka.actor.Actor.Receive
-import akka.actor.{ActorRef, Actor}
-import gr8craft.messages.{Trigger, IsTerminated, Stop, Start}
+import akka.actor.{Actor, ActorRef}
+import gr8craft.messages.{IsTerminated, Start, Stop, Trigger}
 import org.slf4s.Logging
 
 import scala.concurrent.duration.Duration

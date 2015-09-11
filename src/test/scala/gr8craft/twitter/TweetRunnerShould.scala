@@ -10,7 +10,7 @@ import org.scalatest.FunSuiteLike
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TweetRunnerShould extends TestKit(ActorSystem("ScheduledExecutorShould")) with FunSuiteLike with MockFactory {
+class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with FunSuiteLike with MockFactory {
   val topic = "topic"
   val location = "location"
 
