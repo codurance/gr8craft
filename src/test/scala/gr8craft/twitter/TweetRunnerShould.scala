@@ -22,7 +22,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
 
   test("tweet the first article from the shelf") {
-    (shelf.first _).expects().returns(inspiration)
+    (shelf.next _).expects().returns(inspiration)
     (twitterService.tweet _).expects("Your hourly recommended article about " + topic + ": " + location)
 
     tweetRunner ! Trigger

@@ -7,7 +7,7 @@ import gr8craft.messages.{AddInspiration, Trigger}
 
 class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Actor {
   def run(): Unit = {
-    val article = shelf.first
+    val article = shelf.next
     twitterService.tweet(s"Your hourly recommended article about ${article.topic}: ${article.location}")
   }
 
