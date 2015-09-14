@@ -31,6 +31,8 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   Given( """^the next article on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, articleLocation: String) =>
     shelf = new Shelf {
       override def first: Article = new Article(topic, articleLocation)
+
+      override def add(article: Article) = {}
     }
   }
 

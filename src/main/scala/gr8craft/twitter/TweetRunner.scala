@@ -2,7 +2,7 @@ package gr8craft.twitter
 
 import akka.actor.Actor
 import gr8craft.article.Shelf
-import gr8craft.messages.Trigger
+import gr8craft.messages.{AddInspiration, Trigger}
 
 
 class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Actor {
@@ -13,5 +13,6 @@ class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Actor {
 
   override def receive = {
     case Trigger => run()
+    case AddInspiration(article) => shelf.add(article)
   }
 }
