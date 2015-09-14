@@ -12,4 +12,16 @@ class InMemoryShelfShould extends FunSuite with Matchers {
     shelf.next shouldBe article
     shelf.next shouldBe laterArticle
   }
+
+  test("add new articles add the end of the shelf") {
+    val article = new Article("topic", "location")
+    val laterArticle = new Article("another topic", "another location")
+    val shelf = new InMemoryShelf(List())
+
+    shelf.add(article)
+    shelf.add(laterArticle)
+
+    shelf.next shouldBe article
+    shelf.next shouldBe laterArticle
+  }
 }
