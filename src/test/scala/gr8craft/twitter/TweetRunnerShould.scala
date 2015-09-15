@@ -30,7 +30,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
 
   test("receive a new inspiration for the shelf") {
-    (shelf.add _).expects(inspiration)
+    (shelf.withInspiration _).expects(inspiration)
 
     tweetRunner ! AddInspiration(inspiration)
   }

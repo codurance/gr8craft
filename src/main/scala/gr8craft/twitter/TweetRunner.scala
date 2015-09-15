@@ -13,6 +13,6 @@ class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Actor {
 
   override def receive = {
     case Trigger => run()
-    case AddInspiration(inspiration) => shelf.add(inspiration)
+    case AddInspiration(inspiration) => shelf.withInspiration(inspiration)
   }
 }

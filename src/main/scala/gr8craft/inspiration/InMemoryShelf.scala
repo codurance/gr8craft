@@ -1,9 +1,8 @@
 package gr8craft.inspiration
 
 
-case class InMemoryShelf(_inspirations: Seq[Inspiration]) extends Shelf {
+case class InMemoryShelf(inspirations: Seq[Inspiration]) extends Shelf {
   var index = 0
-  var inspirations = _inspirations
 
   override def next: Inspiration = {
     val next = inspirations(index)
@@ -11,5 +10,5 @@ case class InMemoryShelf(_inspirations: Seq[Inspiration]) extends Shelf {
     next
   }
 
-  override def add(inspiration: Inspiration): Unit = inspirations = inspirations :+ inspiration
+  override def withInspiration(inspiration: Inspiration): Shelf = new InMemoryShelf(inspirations :+ inspiration)
 }

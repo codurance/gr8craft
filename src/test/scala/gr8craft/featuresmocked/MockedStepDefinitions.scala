@@ -3,7 +3,7 @@ package gr8craft.featuresmocked
 import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.inspiration.{Inspiration, Shelf}
+import gr8craft.inspiration.{InMemoryShelf, Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterService}
 import org.scalatest.Matchers
@@ -32,7 +32,7 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
     shelf = new Shelf {
       override def next: Inspiration = new Inspiration(topic, location)
 
-      override def add(inspiration: Inspiration) = {}
+      override def withInspiration(inspiration: Inspiration): Shelf = this
     }
   }
 

@@ -1,7 +1,7 @@
 package gr8craft.inspiration
 
 trait Shelf {
-  def add(inspiration: Inspiration)
+  def withInspiration(inspiration: Inspiration): Shelf
 
   def next: Inspiration
 }

@@ -13,13 +13,13 @@ class InMemoryShelfShould extends FunSuite with Matchers {
     shelf.next shouldBe laterInspiration
   }
 
-  test("add new inspirations add the end of the shelf") {
+  test("withInspiration new inspirations withInspiration the end of the shelf") {
     val inspiration = new Inspiration("topic", "location")
     val laterInspiration = new Inspiration("another topic", "another location")
-    val shelf = new InMemoryShelf(List())
 
-    shelf.add(inspiration)
-    shelf.add(laterInspiration)
+    val shelf = new InMemoryShelf(List())
+      .withInspiration(inspiration)
+      .withInspiration(laterInspiration)
 
     shelf.next shouldBe inspiration
     shelf.next shouldBe laterInspiration
