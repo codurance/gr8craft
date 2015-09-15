@@ -1,17 +1,19 @@
 package gr8craft.featuresmocked
 
 import akka.actor.{ActorSystem, Props}
+import akka.testkit.TestKit
+import akka.testkit.TestKit.shutdownActorSystem
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterService}
-import org.scalatest.Matchers
+import org.scalatest.{BeforeAndAfterAll, Matchers}
 import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.duration._
 
-class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
+class MockedStepDefinitions extends TestKit(ActorSystem("MockedStepDefinitions")) with ScalaDsl with EN with Matchers with Eventually {
   val twitterService = new TwitterService {
     var tweet: String = null
 
@@ -22,10 +24,8 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   var shelf: Shelf = null
   var application: ApplicationRunner = null
 
-  val system = ActorSystem("MockedFeatureSpecifications")
-
   After() { _ =>
-    application.stop()
+    shutdownActorSystem(system)
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
@@ -38,17 +38,14 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
 
   When( """^the hour is reached$""") { () =>
     val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, shelf)))
-    val scheduler = system.actorOf(Props(new ScheduledExecutor(1.second, tweetRunner)))
+    val scheduler = system.actorOf(Props(new ScheduledExecutor(1.millisecond, tweetRunner)))
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    eventually(timeout(10.seconds), interval(1.second)) {
-      twitterService.tweetSent should not be null
-    }
+    awaitCond(twitterService.tweetSent != null, 1.second)
     twitterService.tweetSent shouldBe expectedTweet
   }
-
 
 }

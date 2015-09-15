@@ -1,6 +1,8 @@
 package gr8craft.features
 
 import akka.actor.{ActorSystem, Props}
+import akka.testkit.TestKit
+import akka.testkit.TestKit._
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
@@ -14,20 +16,19 @@ import twitter4j.Status
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
-class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
+class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with ScalaDsl with EN with Matchers with Eventually {
 
   val twitter = createTwitter("4testing")
   val twitterService = new TwitterApiService(twitter)
   var shelf: Shelf = null
   var application: ApplicationRunner = null
-  val system = ActorSystem("EndToEndFeatureSpecifications")
 
   Before() { _ =>
     twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
   }
 
   After() { _ =>
-    application.stop()
+    shutdownActorSystem(system)
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
@@ -49,6 +50,5 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
     }
     newestTweet.get shouldEqual expectedTweet
   }
-
 
 }
