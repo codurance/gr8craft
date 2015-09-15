@@ -1,6 +1,6 @@
 package gr8craft.messages
 
-import gr8craft.article.Article
+import gr8craft.inspiration.Inspiration
 
 sealed trait Message
 
@@ -12,4 +12,4 @@ case object Stop extends Message
 
 case object Trigger extends Message
 
-case class AddInspiration(article: Article) extends Message
+case class AddInspiration(inspiration: Inspiration) extends Message

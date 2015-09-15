@@ -1,6 +1,7 @@
+package gr8craft
+
 import akka.actor.ActorSystem
 import akka.testkit.JavaTestKit
-import gr8craft.ApplicationRunner
 import gr8craft.messages.{Start, Stop}
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory

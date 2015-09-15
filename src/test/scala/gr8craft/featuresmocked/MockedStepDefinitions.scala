@@ -3,7 +3,7 @@ package gr8craft.featuresmocked
 import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.article.{Article, Shelf}
+import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterService}
 import org.scalatest.Matchers
@@ -22,17 +22,17 @@ class MockedStepDefinitions extends ScalaDsl with EN with Matchers with Eventual
   var shelf: Shelf = null
   var application: ApplicationRunner = null
 
-  val system = ActorSystem("MockedGr8craftFeatureSpecifications")
+  val system = ActorSystem("MockedFeatureSpecifications")
 
   After() { _ =>
     application.stop()
   }
 
-  Given( """^the next article on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, articleLocation: String) =>
+  Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
     shelf = new Shelf {
-      override def next: Article = new Article(topic, articleLocation)
+      override def next: Inspiration = new Inspiration(topic, location)
 
-      override def add(article: Article) = {}
+      override def add(inspiration: Inspiration) = {}
     }
   }
 

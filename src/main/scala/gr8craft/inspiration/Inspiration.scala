@@ -1,6 +1,6 @@
-package gr8craft.article
+package gr8craft.inspiration
 
-class Article(_topic: String, _location: String) {
+class Inspiration(_topic: String, _location: String) {
   def topic = _topic
 
   def location = _location

@@ -4,7 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.article.{Article, InMemoryShelf, Shelf}
+import gr8craft.inspiration.{Inspiration, InMemoryShelf, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterApiService}
 import org.scalatest.Matchers
@@ -20,7 +20,7 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   val twitterService = new TwitterApiService(twitter)
   var shelf: Shelf = null
   var application: ApplicationRunner = null
-  val system = ActorSystem("EndToEndGr8craftFeatureSpecifications")
+  val system = ActorSystem("EndToEndFeatureSpecifications")
 
   Before() { _ =>
     twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
@@ -30,8 +30,8 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
     application.stop()
   }
 
-  Given( """^the next article on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, articleLocation: String) =>
-    shelf = InMemoryShelf(Seq(new Article(topic, articleLocation)))
+  Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
+    shelf = InMemoryShelf(Seq(new Inspiration(topic, location)))
   }
 
   When( """^the hour is reached$""") { () =>
