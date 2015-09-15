@@ -10,5 +10,5 @@ case class InMemoryShelf(inspirations: Seq[Inspiration]) extends Shelf {
     next
   }
 
-  override def withInspiration(inspiration: Inspiration): Shelf = new InMemoryShelf(inspirations :+ inspiration)
+  override def withInspiration(inspiration: Inspiration): Shelf = new InMemoryShelf(inspirations.drop(index) :+ inspiration)
 }

@@ -19,9 +19,9 @@ class InMemoryShelfShould extends FunSuite with Matchers {
 
     val shelf = new InMemoryShelf(List())
       .withInspiration(inspiration)
-      .withInspiration(laterInspiration)
-
     shelf.next shouldBe inspiration
-    shelf.next shouldBe laterInspiration
+
+    val updatedShelf = shelf.withInspiration(laterInspiration)
+    updatedShelf.next shouldBe laterInspiration
   }
 }
