@@ -3,7 +3,7 @@ package gr8craft.featuresmocked
 import akka.actor.{ActorSystem, Props}
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
-import gr8craft.inspiration.{InMemoryShelf, Inspiration, Shelf}
+import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
 import gr8craft.twitter.{TweetRunner, TwitterService}
 import org.scalatest.Matchers

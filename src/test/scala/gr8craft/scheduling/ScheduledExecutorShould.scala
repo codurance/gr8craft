@@ -1,10 +1,9 @@
 package gr8craft.scheduling
 
 import akka.actor.{ActorSystem, Props}
-import akka.pattern.Patterns
 import akka.pattern.Patterns.ask
 import akka.testkit.{DefaultTimeout, JavaTestKit, TestActorRef, TestKit}
-import gr8craft.messages.{Start, IsTerminated, Stop, Trigger}
+import gr8craft.messages.{IsTerminated, Start, Stop, Trigger}
 import org.junit.runner.RunWith
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures

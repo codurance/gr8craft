@@ -2,7 +2,7 @@ package gr8craft
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.inspiration.{Inspiration, InMemoryShelf}
+import gr8craft.inspiration.{InMemoryShelf, Inspiration}
 import gr8craft.messages.{Start, Stop}
 import gr8craft.scheduling._
 import gr8craft.twitter.{TweetRunner, TwitterApiService}

@@ -1,6 +1,6 @@
 package gr8craft.inspiration
 
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.{FunSuite, Matchers}
 
 class InMemoryShelfShould extends FunSuite with Matchers {
   test("return inspirations on the shelf first in first out") {
@@ -13,7 +13,7 @@ class InMemoryShelfShould extends FunSuite with Matchers {
     shelf.next shouldBe laterInspiration
   }
 
-  test("withInspiration new inspirations withInspiration the end of the shelf") {
+  test("add new inspirations to the end of the shelf") {
     val inspiration = new Inspiration("topic", "location")
     val laterInspiration = new Inspiration("another topic", "another location")
 

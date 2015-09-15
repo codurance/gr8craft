@@ -29,9 +29,14 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
   }
 
 
-  test("receive a new inspiration for the shelf") {
-    (shelf.withInspiration _).expects(inspiration)
+  test("receive a new inspiration for the shelf and use it") {
+    val newShelf = mock[Shelf]
+    (shelf.withInspiration _).expects(inspiration).returns(newShelf)
+    (newShelf.next _).expects().returns(inspiration)
+    (twitterService.tweet _).expects("Your hourly recommended inspiration about " + topic + ": " + location)
 
     tweetRunner ! AddInspiration(inspiration)
+
+    tweetRunner ! Trigger
   }
 }

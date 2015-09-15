@@ -4,15 +4,21 @@ import akka.actor.Actor
 import gr8craft.inspiration.Shelf
 import gr8craft.messages.{AddInspiration, Trigger}
 
-
 class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Actor {
-  def run(): Unit = {
-    val inspiration = shelf.next
-    twitterService.tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
-  }
+
+  import context._
 
   override def receive = {
-    case Trigger => run()
-    case AddInspiration(inspiration) => shelf.withInspiration(inspiration)
+    withShelf(shelf)
+  }
+
+  def withShelf(shelf: Shelf): Receive = {
+    case Trigger => run(shelf)
+    case AddInspiration(inspiration) => become(withShelf(shelf.withInspiration(inspiration)))
+  }
+
+  def run(shelf: Shelf): Unit = {
+    val inspiration = shelf.next
+    twitterService.tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
   }
 }
