@@ -18,7 +18,7 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
 
   val twitter = createTwitter("4testing")
   val twitterService = new TwitterApiService(twitter)
-  var shelf: Shelf = new InMemoryShelf
+  var shelf: Shelf = null
   var application: ApplicationRunner = null
   val system = ActorSystem("EndToEndGr8craftFeatureSpecifications")
 
@@ -31,7 +31,7 @@ class StepDefinitions extends ScalaDsl with EN with Matchers with Eventually {
   }
 
   Given( """^the next article on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, articleLocation: String) =>
-    shelf.add(new Article(topic, articleLocation))
+    shelf = InMemoryShelf(Seq(new Article(topic, articleLocation)))
   }
 
   When( """^the hour is reached$""") { () =>
