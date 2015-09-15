@@ -27,10 +27,9 @@ object ApplicationRunner {
   }
 
   def assembleApplication: ApplicationRunner = {
-    val inspirations = List(new Inspiration("Interaction Driven Design", "http://www.ustream.tv/recorded/61480606"))
     val twitterService = new TwitterApiService(createTwitter())
     val system = ActorSystem("Gr8craftSystem")
-    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, new InMemoryShelf(inspirations))))
+    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, new InMemoryShelf(List()))))
     val scheduler = system.actorOf(Props(new ScheduledExecutor(1.hour, tweetRunner)))
     new ApplicationRunner(scheduler)
   }

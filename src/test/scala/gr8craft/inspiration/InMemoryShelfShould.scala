@@ -24,4 +24,14 @@ class InMemoryShelfShould extends FunSuite with Matchers {
     val updatedShelf = shelf.withInspiration(laterInspiration)
     updatedShelf.next shouldBe laterInspiration
   }
+
+  test("give default inspiration if it runs out of inspirations") {
+    val shelf = new InMemoryShelf(List())
+
+    val inspiration = shelf.next
+   
+    inspiration.topic shouldBe "Interaction Driven Design"
+    inspiration.location shouldBe "http://www.ustream.tv/recorded/61480606"
+  }
+
 }
