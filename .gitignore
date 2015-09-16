@@ -3,6 +3,7 @@ target
 
 # IntelliJ IDEA
 .idea
+journal
 
 # Local Twitter config
 twitter4j.properties
