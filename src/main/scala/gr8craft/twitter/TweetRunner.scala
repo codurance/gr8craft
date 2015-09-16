@@ -1,10 +1,15 @@
 package gr8craft.twitter
 
+import akka.actor.ActorRef
 import akka.persistence.PersistentActor
 import gr8craft.inspiration.{Inspiration, Shelf}
-import gr8craft.messages.{AddInspiration, Trigger}
+import gr8craft.messages.{Tweet, AddInspiration, Trigger}
 
-class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends PersistentActor {
+case class Tweeted(inspiration: Inspiration)
+
+case class Added(inspiration: Inspiration)
+
+class TweetRunner(tweeter: ActorRef, shelf: Shelf) extends PersistentActor {
 
   import context._
 
@@ -19,7 +24,12 @@ class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Persiste
 
   def withShelf(shelf: Shelf): Receive = {
     case Trigger => run(shelf)
-    case AddInspiration(inspiration) => withInspiration(inspiration)
+    case AddInspiration(inspiration) => addInspiration(inspiration)
+  }
+
+  def addInspiration(inspiration: Inspiration): Unit = {
+    persist(Added(inspiration))(_ =>
+      withInspiration(inspiration))
   }
 
   def withInspiration(inspiration: Inspiration): Unit = {
@@ -28,7 +38,9 @@ class TweetRunner(twitterService: TwitterService, shelf: Shelf) extends Persiste
 
   def run(shelf: Shelf): Unit = {
     val inspiration = shelf.next
-    twitterService.tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
-  }
 
+    persist(Tweeted(inspiration))(_ =>
+      tweeter ! Tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
+    )
+  }
 }

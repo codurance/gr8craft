@@ -1,9 +1,9 @@
 package gr8craft.twitter
 
 import akka.actor.{ActorSystem, Props}
-import akka.testkit.{TestActorRef, TestKit}
+import akka.testkit.{TestProbe, TestKit}
 import gr8craft.inspiration.{Inspiration, Shelf}
-import gr8craft.messages.{AddInspiration, Trigger}
+import gr8craft.messages.{Tweet, AddInspiration, Trigger}
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.FunSuiteLike
@@ -16,27 +16,27 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
   val inspiration = new Inspiration(topic, location)
 
   val shelf = mock[Shelf]
-  val twitterService = mock[TwitterService]
+  val tweeter = TestProbe()
 
-  val tweetRunner = TestActorRef(Props(new TweetRunner(twitterService, shelf)))
-
-
+  val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter.ref, shelf)))
+  
   test("tweet the first inspiration from the shelf") {
     (shelf.next _).expects().returns(inspiration)
-    (twitterService.tweet _).expects("Your hourly recommended inspiration about " + topic + ": " + location)
 
     tweetRunner ! Trigger
-  }
 
+    tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
+  }
 
   test("receive a new inspiration for the shelf and use it") {
     val newShelf = mock[Shelf]
     (shelf.withInspiration _).expects(inspiration).returns(newShelf)
     (newShelf.next _).expects().returns(inspiration)
-    (twitterService.tweet _).expects("Your hourly recommended inspiration about " + topic + ": " + location)
 
     tweetRunner ! AddInspiration(inspiration)
 
     tweetRunner ! Trigger
+
+    tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
   }
 }

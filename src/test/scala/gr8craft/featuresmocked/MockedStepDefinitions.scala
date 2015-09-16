@@ -1,13 +1,13 @@
 package gr8craft.featuresmocked
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{Props, ActorSystem}
 import akka.testkit.TestKit
 import akka.testkit.TestKit.shutdownActorSystem
 import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationRunner
 import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
-import gr8craft.twitter.{TweetRunner, TwitterService}
+import gr8craft.twitter.{Tweeter, TweetRunner, TwitterService}
 import org.scalatest.{BeforeAndAfterAll, Matchers}
 import org.scalatest.concurrent.Eventually
 
@@ -37,7 +37,8 @@ class MockedStepDefinitions extends TestKit(ActorSystem("MockedStepDefinitions")
   }
 
   When( """^the hour is reached$""") { () =>
-    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, shelf)))
+    val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
+    val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter, shelf)))
     val scheduler = system.actorOf(Props(new ScheduledExecutor(1.millisecond, tweetRunner)))
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()

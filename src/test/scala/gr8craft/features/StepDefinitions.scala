@@ -8,7 +8,7 @@ import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.inspiration.{InMemoryShelf, Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
-import gr8craft.twitter.{TweetRunner, TwitterApiService}
+import gr8craft.twitter.{Tweeter, TweetRunner, TwitterApiService}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
 import twitter4j.Status
@@ -32,11 +32,12 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
-    shelf = InMemoryShelf(Seq(new Inspiration(topic, location)))
+    shelf = InMemoryShelf(Set(new Inspiration(topic, location)))
   }
 
   When( """^the hour is reached$""") { () =>
-    val tweetRunner = system.actorOf(Props(new TweetRunner(twitterService, shelf)))
+    val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
+    val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter, shelf)))
     val scheduler = system.actorOf(Props(new ScheduledExecutor(1.second, tweetRunner)))
     this.application = new ApplicationRunner(scheduler)
     application.startTwitterBot()
