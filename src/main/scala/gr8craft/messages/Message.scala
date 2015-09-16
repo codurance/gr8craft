@@ -13,3 +13,5 @@ case object Stop extends Message
 case object Trigger extends Message
 
 case class AddInspiration(inspiration: Inspiration) extends Message
+
+case class Tweet(tweet: String) extends Message
