@@ -1,7 +1,7 @@
 package gr8craft.inspiration
 
 import akka.actor.Actor
-import gr8craft.messages.{Done, AddInspiration, Inspire, Next}
+import gr8craft.messages._
 
 
 case class Shelf(inspirations: Set[Inspiration]) extends Actor {
@@ -16,6 +16,7 @@ case class Shelf(inspirations: Set[Inspiration]) extends Actor {
 
   def withInspirations(inspirations: Set[Inspiration]): Receive = {
     case Next => next(inspirations)
+    case Skip => index = index + 1
     case AddInspiration(inspiration: Inspiration) => addInspiration(inspirations, inspiration)
   }
 

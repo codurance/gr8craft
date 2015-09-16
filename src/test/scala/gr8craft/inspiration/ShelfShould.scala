@@ -2,7 +2,7 @@ package gr8craft.inspiration
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
-import gr8craft.messages.{Done, AddInspiration, Inspire, Next}
+import gr8craft.messages._
 import org.scalatest.{FunSuiteLike, Matchers, OneInstancePerTest}
 
 class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike with Matchers with ImplicitSender with OneInstancePerTest {
@@ -25,6 +25,18 @@ class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike 
 
     shelf ! Next
     expectMsg(Inspire(inspiration))
+    shelf ! Next
+    expectMsg(Inspire(laterInspiration))
+  }
+
+  test("skip inspirations if instructed") {
+    val laterInspiration = new Inspiration("another topic", "another location")
+
+    shelf ! AddInspiration(inspiration)
+    shelf ! AddInspiration(laterInspiration)
+
+    shelf ! Skip
+
     shelf ! Next
     expectMsg(Inspire(laterInspiration))
   }
