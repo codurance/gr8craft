@@ -2,43 +2,35 @@ package gr8craft.twitter
 
 import akka.actor.ActorRef
 import akka.persistence.PersistentActor
-import gr8craft.inspiration.{Inspiration, Shelf}
-import gr8craft.messages.{Tweet, AddInspiration, Trigger}
+import gr8craft.inspiration.Inspiration
+import gr8craft.messages._
 
 case class Tweeted(inspiration: Inspiration)
 
 case class Added(inspiration: Inspiration)
 
-class TweetRunner(tweeter: ActorRef, shelf: Shelf) extends PersistentActor {
-
-  import context._
+class TweetRunner(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
 
   override def persistenceId: String = "TweetRunner"
 
-  override def receiveCommand: Receive = withShelf(shelf)
-
   override def receiveRecover: Receive = {
-    case Trigger =>
-    case AddInspiration(inspiration) =>
+    case Trigger => shelf ! Next
+    case AddInspiration(inspiration) => shelf ! AddInspiration(inspiration)
+    case Inspire(inspiration) =>
   }
 
-  def withShelf(shelf: Shelf): Receive = {
-    case Trigger => run(shelf)
+  override def receiveCommand: Receive = {
+    case Trigger => shelf ! Next
     case AddInspiration(inspiration) => addInspiration(inspiration)
+    case Inspire(inspiration) => tweet(inspiration)
   }
 
   def addInspiration(inspiration: Inspiration): Unit = {
     persist(Added(inspiration))(_ =>
-      withInspiration(inspiration))
+      shelf ! AddInspiration(inspiration))
   }
 
-  def withInspiration(inspiration: Inspiration): Unit = {
-    become(withShelf(shelf.withInspiration(inspiration)))
-  }
-
-  def run(shelf: Shelf): Unit = {
-    val inspiration = shelf.next
-
+  def tweet(inspiration: Inspiration): Unit = {
     persist(Tweeted(inspiration))(_ =>
       tweeter ! Tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
     )

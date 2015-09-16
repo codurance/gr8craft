@@ -1,10 +1,8 @@
 package gr8craft.twitter
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import akka.testkit.{TestActorRef, TestKit}
-import gr8craft.inspiration.{Inspiration, Shelf}
-import gr8craft.messages.{Tweet, AddInspiration, Trigger}
-import gr8craft.scheduling.ScheduledExecutor
+import gr8craft.messages.Tweet
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.FunSuiteLike
