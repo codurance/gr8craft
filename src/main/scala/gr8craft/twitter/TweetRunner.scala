@@ -5,6 +5,8 @@ import akka.persistence.PersistentActor
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages._
 
+case object Triggered
+
 case class Tweeted(inspiration: Inspiration)
 
 case class Added(inspiration: Inspiration)
@@ -14,13 +16,13 @@ class TweetRunner(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
   override def persistenceId: String = "TweetRunner"
 
   override def receiveRecover: Receive = {
-    case Trigger => shelf ! Next
-    case AddInspiration(inspiration) => shelf ! AddInspiration(inspiration)
-    case Inspire(inspiration) =>
+    case Triggered => shelf ! Skip
+    case Added(inspiration) => shelf ! AddInspiration(inspiration)
+    case Tweeted(inspiration) =>
   }
 
   override def receiveCommand: Receive = {
-    case Trigger => shelf ! Next
+    case Trigger => persist(Triggered)(_ => shelf ! Next)
     case AddInspiration(inspiration) => addInspiration(inspiration)
     case Inspire(inspiration) => tweet(inspiration)
   }

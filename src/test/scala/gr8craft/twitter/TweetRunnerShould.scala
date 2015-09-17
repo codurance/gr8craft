@@ -1,6 +1,6 @@
 package gr8craft.twitter
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{ActorSystem, Kill, Props}
 import akka.testkit.TestKit._
 import akka.testkit.{TestKit, TestProbe}
 import gr8craft.inspiration.Inspiration
@@ -8,10 +8,10 @@ import gr8craft.messages._
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfterAll, FunSuiteLike}
+import org.scalatest.{BeforeAndAfter, FunSuiteLike, OneInstancePerTest}
 
 @RunWith(classOf[JUnitRunner])
-class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with FunSuiteLike with MockFactory with BeforeAndAfterAll {
+class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with FunSuiteLike with MockFactory with BeforeAndAfter with OneInstancePerTest {
   val topic = "topic"
   val location = "location"
   val anotherTopic = "anotherTopic"
@@ -24,7 +24,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
   val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter.ref, shelf.ref)))
 
-  override def afterAll() {
+  after {
     shutdownActorSystem(system)
   }
 
@@ -45,5 +45,42 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
     shelf.expectMsg(AddInspiration(inspiration))
   }
-  
+
+  test("recover trigger by skipping message to shelf") {
+    tweetRunner ! Trigger
+    shelf.expectMsg(Next)
+
+    recoverFromShutdown()
+
+    shelf.expectMsg(Skip)
+    tweeter.expectNoMsg()
+  }
+
+  test("recover AddInspiration by replaying it to shelf") {
+    tweetRunner ! AddInspiration(inspiration)
+    shelf.expectMsg(AddInspiration(inspiration))
+    tweetRunner ! AddInspiration(laterInspiration)
+    shelf.expectMsg(AddInspiration(laterInspiration))
+
+    recoverFromShutdown()
+
+    shelf.expectMsg(AddInspiration(inspiration))
+    shelf.expectMsg(AddInspiration(laterInspiration))
+    tweeter.expectNoMsg()
+  }
+
+  test("recover Inspire by doing nothing") {
+    tweetRunner ! Inspire(inspiration)
+    tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
+
+    recoverFromShutdown()
+
+    shelf.expectNoMsg()
+    tweeter.expectNoMsg()
+  }
+
+  def recoverFromShutdown(): Unit = {
+    tweetRunner ! Kill
+    system.actorOf(Props(new TweetRunner(tweeter.ref, shelf.ref)))
+  }
 }

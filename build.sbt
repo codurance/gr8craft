@@ -9,6 +9,7 @@ version := "0.1"
 scalaVersion := "2.11.7"
 
 val akkaVersion = "2.3.11"
+resolvers += "dnvriend at bintray" at "http://dl.bintray.com/dnvriend/maven"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -17,6 +18,7 @@ libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % "4.0.4",
   "org.slf4s" %% "slf4s-api" % "1.7.12",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
+  "org.postgresql" % "postgresql" % "9.4-1202-jdbc42" % Runtime,
 
   "org.scalatest" %% "scalatest" % "2.2.4" % Test,
   "junit" % "junit" % "4.12" % Test,
@@ -24,5 +26,6 @@ libraryDependencies ++= Seq(
   "info.cukes" %% "cucumber-scala" % "1.2.4" % Test,
   "info.cukes" % "cucumber-junit" % "1.2.4" % Test,
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % Test,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
+  "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.0.5" % Test
 )
