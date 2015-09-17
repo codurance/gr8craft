@@ -1,19 +1,23 @@
 package gr8craft
 
+import com.typesafe.config.ConfigFactory
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Twitter, TwitterFactory}
 
 object TwitterFactoryWithConfiguration {
-  def createTwitter(suffix: String = ""): Twitter = {
-    val configuration = new ConfigurationBuilder()
+
+  def createTwitter(): Twitter = {
+    val configuration = ConfigFactory.load().getConfig("twitter4j")
+
+    val twitterAuthConfiguration = new ConfigurationBuilder()
       .setDebugEnabled(true)
-      .setOAuthConsumerKey(readEnvironmentVariable(suffix, "twitter4jconsumerKey"))
-      .setOAuthConsumerSecret(readEnvironmentVariable(suffix, "twitter4jconsumerSecret"))
-      .setOAuthAccessToken(readEnvironmentVariable(suffix, "twitter4jaccessToken"))
-      .setOAuthAccessTokenSecret(readEnvironmentVariable(suffix, "twitter4jaccessTokenSecret"))
+      .setOAuthConsumerKey(configuration.getString("consumerKey"))
+      .setOAuthConsumerSecret(configuration.getString("consumerSecret"))
+      .setOAuthAccessToken(configuration.getString("accessToken"))
+      .setOAuthAccessTokenSecret(configuration.getString("accessTokenSecret"))
       .build()
 
-    new TwitterFactory(configuration).getInstance()
+    new TwitterFactory(twitterAuthConfiguration).getInstance()
   }
 
   def readEnvironmentVariable(suffix: String, key: String): String = {

@@ -17,8 +17,8 @@ class TweetRunner(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
 
   override def receiveRecover: Receive = {
     case Triggered => shelf ! Skip
-    case Added(inspiration) => shelf ! AddInspiration(inspiration)
     case Tweeted(inspiration) =>
+    case Added(inspiration) => shelf ! AddInspiration(inspiration)
   }
 
   override def receiveCommand: Receive = {

@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 
 class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with ScalaDsl with EN with Matchers with Eventually {
 
-  val twitter = createTwitter("4testing")
+  val twitter = createTwitter()
   val twitterService = new TwitterApiService(twitter)
 
 
