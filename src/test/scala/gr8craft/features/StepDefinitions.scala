@@ -1,15 +1,14 @@
 package gr8craft.features
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.testkit.TestKit
 import akka.testkit.TestKit._
 import cucumber.api.scala.{EN, ScalaDsl}
+import gr8craft.ApplicationFactory.createApplication
 import gr8craft.ApplicationRunner
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.inspiration.{Inspiration, Shelf}
-import gr8craft.messages.AddInspiration
-import gr8craft.scheduling.ScheduledExecutor
-import gr8craft.twitter.{TweetRunner, Tweeter, TwitterApiService}
+import gr8craft.inspiration.Inspiration
+import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
 import twitter4j.Status
@@ -21,13 +20,7 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
 
   val twitter = createTwitter()
   val twitterService = new TwitterApiService(twitter)
-
-
-  var shelf = system.actorOf(Props(new Shelf(Set.empty)))
-  val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
-  val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter, shelf)))
-  val scheduler = system.actorOf(Props(new ScheduledExecutor(1.second, tweetRunner)))
-  var application = new ApplicationRunner(scheduler)
+  var application: ApplicationRunner = null
 
   Before() { _ =>
     twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
@@ -38,7 +31,7 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
-    shelf ! AddInspiration(new Inspiration(topic, location))
+    application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.millisecond)
   }
 
   When( """^the hour is reached$""") { () =>

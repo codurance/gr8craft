@@ -19,8 +19,4 @@ object TwitterFactoryWithConfiguration {
 
     new TwitterFactory(twitterAuthConfiguration).getInstance()
   }
-
-  def readEnvironmentVariable(suffix: String, key: String): String = {
-    sys.env(key + suffix)
-  }
 }
