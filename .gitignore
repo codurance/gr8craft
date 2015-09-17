@@ -3,7 +3,10 @@ target
 
 # IntelliJ IDEA
 .idea
+
+# Local journal
 journal
 
-# Local Twitter config
+# Local config
 twitter4j.properties
+src/main/resources/application.conf
