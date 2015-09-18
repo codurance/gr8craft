@@ -11,9 +11,8 @@ import gr8craft.inspiration.Inspiration
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
-import twitter4j.{Paging, ResponseList, TwitterAdapter, Status}
+import twitter4j.{ResponseList, Status, TwitterAdapter}
 
-import scala.Option.empty
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 

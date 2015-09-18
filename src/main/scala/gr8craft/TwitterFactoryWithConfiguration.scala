@@ -2,7 +2,7 @@ package gr8craft
 
 import com.typesafe.config.ConfigFactory
 import twitter4j.conf.ConfigurationBuilder
-import twitter4j.{AsyncTwitter, AsyncTwitterFactory, Twitter, TwitterFactory}
+import twitter4j.{AsyncTwitter, AsyncTwitterFactory}
 
 object TwitterFactoryWithConfiguration {
 

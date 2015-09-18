@@ -1,32 +1,23 @@
 package gr8craft.twitter
 
-import akka.actor.{ActorSystem, Kill, Props}
-import akka.testkit.TestKit._
-import akka.testkit.{TestKit, TestProbe}
+import akka.actor.{Kill, Props}
+import akka.testkit.TestProbe
+import gr8craft.AkkaTest
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages._
 import org.junit.runner.RunWith
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfter, FunSuiteLike, OneInstancePerTest}
 
 @RunWith(classOf[JUnitRunner])
-class CuratorShould extends TestKit(ActorSystem("CuratorShould")) with FunSuiteLike with MockFactory with BeforeAndAfter with OneInstancePerTest {
-  val topic = "topic"
-  val location = "location"
-  val anotherTopic = "anotherTopic"
-  val anotherLocation = "anotherLocation"
-  val inspiration = new Inspiration(topic, location)
-  val laterInspiration = new Inspiration(anotherTopic, anotherLocation)
+class CuratorShould extends AkkaTest("CuratorShould") {
+  val inspiration = new Inspiration("topic", "location")
+  val laterInspiration = new Inspiration("anotherTopic", "anotherLocation")
 
   val shelf = TestProbe()
   val tweeter = TestProbe()
 
   val tweetRunner = system.actorOf(Props(new Curator(tweeter.ref, shelf.ref)))
 
-  after {
-    shutdownActorSystem(system)
-  }
 
   test("receive a trigger and ask the shelf for the next inspiration") {
     tweetRunner ! Trigger
@@ -37,7 +28,7 @@ class CuratorShould extends TestKit(ActorSystem("CuratorShould")) with FunSuiteL
   test("receive a new inspiration and use it") {
     tweetRunner ! Inspire(inspiration)
 
-    tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
+    tweeter.expectMsg(Tweet(inspiration))
   }
 
   test("receive a new inspiration for the shelf and forward it") {
@@ -71,7 +62,7 @@ class CuratorShould extends TestKit(ActorSystem("CuratorShould")) with FunSuiteL
 
   test("recover Inspire by doing nothing") {
     tweetRunner ! Inspire(inspiration)
-    tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
+    tweeter.expectMsg(Tweet(inspiration))
 
     recoverFromShutdown()
 
