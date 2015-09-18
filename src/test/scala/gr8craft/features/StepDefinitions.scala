@@ -11,9 +11,8 @@ import gr8craft.inspiration.Inspiration
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
-import twitter4j.{Paging, ResponseList, TwitterAdapter, Status}
+import twitter4j.{ResponseList, Status, TwitterAdapter}
 
-import scala.Option.empty
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
@@ -27,7 +26,7 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
 
   Before() { _ =>
     deleteExistingTimeline()
-    eventually(timeout(1000.seconds), interval(1.second)) {
+    eventually(timeout(100.seconds), interval(1.second)) {
       assert(deleted)
     }
   }
@@ -37,7 +36,7 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") { (topic: String, location: String) =>
-    application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.millisecond)
+    application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.second)
   }
 
   When( """^the hour is reached$""") { () =>
@@ -45,7 +44,7 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    eventually(timeout(1000.seconds), interval(1.second)) {
+    eventually(timeout(100.seconds), interval(1.second)) {
       requestNewestTweet()
       newestTweet.isDefined shouldBe true
     }

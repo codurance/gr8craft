@@ -1,6 +1,6 @@
 package gr8craft
 
-import akka.actor.{ActorSystem, ActorRef}
+import akka.actor.ActorRef
 import gr8craft.ApplicationFactory.createApplication
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages.{Start, Stop}

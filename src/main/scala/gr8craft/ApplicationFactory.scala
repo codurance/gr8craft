@@ -4,7 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.ScheduledExecutor
-import gr8craft.twitter.{TwitterApiService, Curator, Tweeter, TwitterService}
+import gr8craft.twitter.{Curator, Tweeter, TwitterApiService, TwitterService}
 
 import scala.concurrent.duration._
 
