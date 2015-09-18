@@ -11,7 +11,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, FunSuiteLike, OneInstancePerTest}
 
 @RunWith(classOf[JUnitRunner])
-class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with FunSuiteLike with MockFactory with BeforeAndAfter with OneInstancePerTest {
+class CuratorShould extends TestKit(ActorSystem("CuratorShould")) with FunSuiteLike with MockFactory with BeforeAndAfter with OneInstancePerTest {
   val topic = "topic"
   val location = "location"
   val anotherTopic = "anotherTopic"
