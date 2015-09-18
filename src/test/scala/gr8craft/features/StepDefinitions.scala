@@ -27,6 +27,9 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
 
   Before() { _ =>
     deleteExistingTimeline()
+    eventually(timeout(1000.seconds), interval(1.second)) {
+      assert(deleted)
+    }
   }
 
   After() { _ =>
