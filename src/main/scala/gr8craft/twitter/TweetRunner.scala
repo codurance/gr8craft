@@ -22,7 +22,7 @@ class TweetRunner(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
   }
 
   override def receiveCommand: Receive = {
-    case Trigger => persist(Triggered)(_ => shelf ! Next)
+    case Trigger => persist(Triggered)(_ => shelf ! InspireMe)
     case AddInspiration(inspiration) => addInspiration(inspiration)
     case Inspire(inspiration) => tweet(inspiration)
   }

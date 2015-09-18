@@ -12,7 +12,7 @@ class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike 
   test("return inspirations on the shelf") {
     shelf ! AddInspiration(inspiration)
 
-    shelf ! Next
+    shelf ! InspireMe
 
     expectMsg(Inspire(inspiration))
   }
@@ -23,9 +23,9 @@ class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike 
     shelf ! AddInspiration(inspiration)
     shelf ! AddInspiration(laterInspiration)
 
-    shelf ! Next
+    shelf ! InspireMe
     expectMsg(Inspire(inspiration))
-    shelf ! Next
+    shelf ! InspireMe
     expectMsg(Inspire(laterInspiration))
   }
 
@@ -37,12 +37,12 @@ class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike 
 
     shelf ! Skip
 
-    shelf ! Next
+    shelf ! InspireMe
     expectMsg(Inspire(laterInspiration))
   }
 
   test("give no inspiration if it runs out of inspirations") {
-    shelf ! Next
+    shelf ! InspireMe
 
     expectNoMsg()
   }
@@ -53,9 +53,9 @@ class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike 
     shelf ! AddInspiration(inspiration)
     shelf ! AddInspiration(laterInspiration)
 
-    shelf ! Next
+    shelf ! InspireMe
     expectMsg(Inspire(inspiration))
-    shelf ! Next
+    shelf ! InspireMe
     expectNoMsg()
   }
 }

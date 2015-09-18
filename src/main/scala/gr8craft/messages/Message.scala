@@ -12,7 +12,7 @@ case object Stop extends Message
 
 case object Trigger extends Message
 
-case object Next extends Message
+case object InspireMe extends Message
 
 case object Done extends Message
 

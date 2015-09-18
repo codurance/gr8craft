@@ -28,13 +28,13 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
     shutdownActorSystem(system)
   }
 
-  test("receive trigger and ask shelf for next article") {
+  test("receive a trigger and ask the shelf for the next inspiration") {
     tweetRunner ! Trigger
 
-    shelf.expectMsg(Next)
+    shelf.expectMsg(InspireMe)
   }
 
-  test("receive a new inspiration for the shelf and use it") {
+  test("receive a new inspiration and use it") {
     tweetRunner ! Inspire(inspiration)
 
     tweeter.expectMsg(Tweet("Your hourly recommended inspiration about " + topic + ": " + location))
@@ -48,7 +48,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
   test("recover trigger by skipping message to shelf") {
     tweetRunner ! Trigger
-    shelf.expectMsg(Next)
+    shelf.expectMsg(InspireMe)
 
     recoverFromShutdown()
 
