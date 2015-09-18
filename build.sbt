@@ -8,14 +8,17 @@ version := "0.1"
 
 scalaVersion := "2.11.7"
 
-val akkaVersion = "2.3.11"
 resolvers += "dnvriend at bintray" at "http://dl.bintray.com/dnvriend/maven"
+
+val akkaVersion = "2.3.11"
+val twitter4jVersion = "4.0.4"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-persistence-experimental" % akkaVersion,
   "com.github.dnvriend" %% "akka-persistence-jdbc" % "1.0.7",
-  "org.twitter4j" % "twitter4j-core" % "4.0.4",
+  "org.twitter4j" % "twitter4j-core" % twitter4jVersion,
+  "org.twitter4j" % "twitter4j-async" % twitter4jVersion,
   "org.slf4s" %% "slf4s-api" % "1.7.12",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
   "org.postgresql" % "postgresql" % "9.4-1202-jdbc42" % Runtime,

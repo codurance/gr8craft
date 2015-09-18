@@ -11,8 +11,9 @@ import gr8craft.inspiration.Inspiration
 import gr8craft.twitter.TwitterApiService
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
-import twitter4j.Status
+import twitter4j.{Paging, ResponseList, TwitterAdapter, Status}
 
+import scala.Option.empty
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
@@ -21,9 +22,11 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   val twitter = createTwitter()
   val twitterService = new TwitterApiService(twitter)
   var application: ApplicationRunner = null
+  var newestTweet: Option[Status] = Option.empty
+  var deleted = false
 
   Before() { _ =>
-    twitter.getUserTimeline.asScala.foreach(status => twitter.destroyStatus(status.getId))
+    deleteExistingTimeline()
   }
 
   After() { _ =>
@@ -39,12 +42,29 @@ class StepDefinitions extends TestKit(ActorSystem("StepDefinitions")) with Scala
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") { (expectedTweet: String) =>
-    val newestTweet = eventually(timeout(1000.seconds), interval(1.second)) {
-      val newestTweet: Option[Status] = twitter.getUserTimeline.asScala.headOption
+    eventually(timeout(1000.seconds), interval(1.second)) {
+      requestNewestTweet()
       newestTweet.isDefined shouldBe true
-      newestTweet.map(_.getText)
     }
-    newestTweet.get shouldEqual expectedTweet
+    newestTweet.map(_.getText).get shouldEqual expectedTweet
   }
 
+  private def deleteExistingTimeline(): Unit = {
+    twitter.addListener(new TwitterAdapter() {
+      override def gotUserTimeline(statuses: ResponseList[Status]): Unit =
+        statuses.asScala
+          .foreach(status => twitter.destroyStatus(status.getId))
+
+      deleted = true
+    })
+    twitter.getUserTimeline()
+  }
+
+  def requestNewestTweet(): Unit = {
+    twitter.addListener(new TwitterAdapter() {
+      override def gotUserTimeline(statuses: ResponseList[Status]): Unit =
+        newestTweet = statuses.asScala.headOption
+    })
+    twitter.getUserTimeline()
+  }
 }

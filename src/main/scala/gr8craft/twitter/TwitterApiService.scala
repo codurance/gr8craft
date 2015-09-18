@@ -1,29 +1,31 @@
 package gr8craft.twitter
 
 import org.slf4s.Logging
-import twitter4j.{Twitter, TwitterException}
+import twitter4j._
 
-class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
+class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Logging {
   var tweet: String = null
 
   override def tweet(tweet: String) {
-    try {
-      sendToTwitter(tweet)
-    } catch {
-      case twitterException: TwitterException =>
-        logException(twitterException)
-    }
+    handleResponse()
+
+    sendTweet(tweet)
   }
 
-  private def sendToTwitter(tweet: String): Unit = {
+  private def sendTweet(tweet: String): Unit = {
     log.info(s"sending tweet to Twitter: $tweet")
-
     twitter.updateStatus(tweet)
-
-    log.info(s"successfully tweeted $tweet")
   }
 
-  private def logException(twitterException: TwitterException): Unit = {
-    log.error(s"Error while tweeting: ${twitterException.getErrorMessage}", twitterException)
+  private def handleResponse(): Unit = {
+    twitter.addListener(new TwitterAdapter() {
+      override def updatedStatus(status: Status) {
+        log.info(s"successfully tweeted $status.getText()")
+      }
+
+      override def onException(twitterException: TwitterException, method: TwitterMethod): Unit = {
+        log.error(s"Error while tweeting: ${twitterException.getErrorMessage}", twitterException)
+      }
+    })
   }
 }
