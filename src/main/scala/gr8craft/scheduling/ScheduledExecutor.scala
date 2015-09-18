@@ -20,15 +20,14 @@ class ScheduledExecutor(duration: Duration, toBeScheduled: ActorRef) extends Act
     case IsTerminated => sender() ! isTerminated
   }
 
-
-  def schedule() {
+  private def schedule() {
     log.info(s"Scheduling every $duration.")
     executor.scheduleAtFixedRate(new Runnable {
       def run() = toBeScheduled ! Trigger
     }, 0, duration.length, duration.unit)
   }
 
-  def shutdown(): Unit = {
+  private def shutdown(): Unit = {
     log.info("shutting down execution...")
 
     executor.shutdown()
@@ -37,5 +36,5 @@ class ScheduledExecutor(duration: Duration, toBeScheduled: ActorRef) extends Act
     log.info("shutdown of execution complete")
   }
 
-  def isTerminated = executor.isTerminated
+  private def isTerminated = executor.isTerminated
 }

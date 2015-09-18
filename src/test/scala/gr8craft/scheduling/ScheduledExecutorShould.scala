@@ -38,13 +38,13 @@ class ScheduledExecutorShould extends TestKit(ActorSystem("ScheduledExecutorShou
     ensureSchedulerIsTerminatedIs(true)
   }
 
-  def ensureSchedulerIsTerminatedIs(isTerminated: Boolean): Unit = {
+  private def ensureSchedulerIsTerminatedIs(isTerminated: Boolean): Unit = {
     whenReady(ask(scheduler, IsTerminated, 2000)) { answer =>
       answer shouldBe isTerminated
     }
   }
 
-  def ensureTriggerMessageWasSent(): Unit = {
+  private def ensureTriggerMessageWasSent(): Unit = {
     toBeScheduled.expectMsgEquals(1.second, Trigger)
   }
 

@@ -79,7 +79,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
     tweeter.expectNoMsg()
   }
 
-  def recoverFromShutdown(): Unit = {
+  private def recoverFromShutdown(): Unit = {
     tweetRunner ! Kill
     system.actorOf(Props(new Curator(tweeter.ref, shelf.ref)))
   }
