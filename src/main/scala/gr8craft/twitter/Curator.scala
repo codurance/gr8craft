@@ -11,9 +11,9 @@ case class Tweeted(inspiration: Inspiration)
 
 case class Added(inspiration: Inspiration)
 
-class TweetRunner(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
+class Curator(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
 
-  override def persistenceId: String = "TweetRunner"
+  override def persistenceId: String = "Curator"
 
   override def receiveRecover: Receive = {
     case Triggered => shelf ! Skip

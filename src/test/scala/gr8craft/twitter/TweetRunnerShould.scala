@@ -22,7 +22,7 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
   val shelf = TestProbe()
   val tweeter = TestProbe()
 
-  val tweetRunner = system.actorOf(Props(new TweetRunner(tweeter.ref, shelf.ref)))
+  val tweetRunner = system.actorOf(Props(new Curator(tweeter.ref, shelf.ref)))
 
   after {
     shutdownActorSystem(system)
@@ -81,6 +81,6 @@ class TweetRunnerShould extends TestKit(ActorSystem("TweetRunnerShould")) with F
 
   def recoverFromShutdown(): Unit = {
     tweetRunner ! Kill
-    system.actorOf(Props(new TweetRunner(tweeter.ref, shelf.ref)))
+    system.actorOf(Props(new Curator(tweeter.ref, shelf.ref)))
   }
 }
