@@ -6,8 +6,8 @@ import twitter4j.{AsyncTwitter, AsyncTwitterFactory}
 
 object TwitterFactoryWithConfiguration {
 
-  def createTwitter(): AsyncTwitter = {
-    val configuration = ConfigFactory.load().getConfig("twitter4j")
+  def createTwitter(contributor: String = ""): AsyncTwitter = {
+    val configuration = ConfigFactory.load().getConfig("twitter4j" + contributor)
 
     val twitterAuthConfiguration = new ConfigurationBuilder()
       .setDebugEnabled(true)
@@ -19,4 +19,5 @@ object TwitterFactoryWithConfiguration {
 
     new AsyncTwitterFactory(twitterAuthConfiguration).getInstance()
   }
+
 }
