@@ -7,19 +7,27 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import gr8craft.ApplicationFactory._
 import gr8craft.ApplicationRunner
 import gr8craft.inspiration.Inspiration
+import gr8craft.messages.{Done, Message}
 import gr8craft.twitter.TwitterService
 import org.scalatest.Matchers
 import org.scalatest.concurrent.Eventually
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class MockedStepDefinitions extends TestKit(ActorSystem("MockedStepDefinitions")) with ScalaDsl with EN with Matchers with Eventually {
   val twitterService = new TwitterService {
     var tweet: String = null
 
-    override def tweet(tweet: String): Unit = this.tweet = tweet
-
     def tweetSent: String = this.tweet
+
+    override def tweet(tweet: String): Future[Message] = {
+      Future {
+        this.tweet = tweet
+        Done
+      }
+    }
   }
 
   var application: ApplicationRunner = null

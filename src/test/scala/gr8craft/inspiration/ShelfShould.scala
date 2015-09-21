@@ -1,11 +1,11 @@
 package gr8craft.inspiration
 
-import akka.actor.{ActorSystem, Props}
-import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
+import akka.actor.Props
+import akka.testkit.TestActorRef
+import gr8craft.AkkaTest
 import gr8craft.messages._
-import org.scalatest.{FunSuiteLike, Matchers, OneInstancePerTest}
 
-class ShelfShould extends TestKit(ActorSystem("ShelfShould")) with FunSuiteLike with Matchers with ImplicitSender with OneInstancePerTest {
+class ShelfShould extends AkkaTest("ShelfShould") {
   val shelf = TestActorRef(Props(new Shelf(Set.empty)))
   val inspiration = new Inspiration("topic", "location")
 
