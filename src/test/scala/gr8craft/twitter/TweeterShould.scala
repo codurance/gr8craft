@@ -30,7 +30,6 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
     tweeter ! Tweet(inspiration)
 
     expectMsg(SuccessfullyTweeted(inspiration))
-
   }
 
   test("informs of unsuccessful tweets") {

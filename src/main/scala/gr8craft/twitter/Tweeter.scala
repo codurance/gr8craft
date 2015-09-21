@@ -9,14 +9,13 @@ import scala.util.{Failure, Success}
 
 class Tweeter(twitterService: TwitterService) extends Actor {
   override def receive: Receive = {
-    case Tweet(inspiration: Inspiration) => {
-
+    case Tweet(inspiration: Inspiration) =>
+      val actorToInform = sender()
       val future = twitterService.tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
-      
+
       future.onComplete {
-        case Success(message) => sender() ! SuccessfullyTweeted(inspiration)
-        case Failure(throwable) => sender() ! FailedToTweet(inspiration)
+        case Success(message) => actorToInform ! SuccessfullyTweeted(inspiration)
+        case Failure(throwable) => actorToInform ! FailedToTweet(inspiration)
       }
-    }
   }
 }
