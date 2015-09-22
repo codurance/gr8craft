@@ -1,5 +1,6 @@
 package gr8craft.twitter
 
+import gr8craft.messages
 import gr8craft.messages.{Done, Message}
 import org.slf4s.Logging
 import twitter4j._
@@ -15,6 +16,8 @@ class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Loggi
 
     promise.future
   }
+
+  override def getDirectMessages: Future[messages.DirectMessage] = ???
 
   private def sendTweet(tweet: String): Unit = {
     log.info(s"sending tweet to Twitter: $tweet")
@@ -38,4 +41,5 @@ class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Loggi
 
     promise
   }
+
 }
