@@ -1,5 +1,8 @@
 package gr8craft.messages
 
+import java.time.LocalDateTime
+import java.time.LocalDateTime.MIN
+
 import gr8craft.inspiration.Inspiration
 
 sealed trait Message
@@ -29,4 +32,6 @@ case class Inspire(inspiration: Inspiration) extends Message
 case class Tweet(tweet: Inspiration) extends Message
 
 case class DirectMessage(sender: String, directMessage: String) extends Message
+
+case class FetchDirectMessages(lastFetched: LocalDateTime) extends Message
 
