@@ -34,7 +34,7 @@ class Curator(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
 
   private def tweet(inspiration: Inspiration): Unit = {
     persist(Tweeted(inspiration))(_ =>
-      tweeter ! Tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
+      tweeter ! Tweet(inspiration)
     )
   }
 }

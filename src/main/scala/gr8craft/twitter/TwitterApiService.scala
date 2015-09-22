@@ -1,15 +1,19 @@
 package gr8craft.twitter
 
+import gr8craft.messages.{Done, Message}
 import org.slf4s.Logging
 import twitter4j._
 
-class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Logging {
-  var tweet: String = null
+import scala.concurrent.{Future, Promise}
 
-  override def tweet(tweet: String) {
-    handleResponse()
+class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Logging {
+
+  override def tweet(tweet: String): Future[Message] = {
+    val promise: Promise[Message] = handleResponse
 
     sendTweet(tweet)
+
+    promise.future
   }
 
   private def sendTweet(tweet: String): Unit = {
@@ -17,15 +21,21 @@ class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Loggi
     twitter.updateStatus(tweet)
   }
 
-  private def handleResponse(): Unit = {
+  private def handleResponse: Promise[Message] = {
+    val promise = Promise[Message]()
+
     twitter.addListener(new TwitterAdapter() {
       override def updatedStatus(status: Status) {
         log.info(s"successfully tweeted $status.getText()")
+        promise.success(Done)
       }
 
       override def onException(twitterException: TwitterException, method: TwitterMethod): Unit = {
         log.error(s"Error while tweeting: ${twitterException.getErrorMessage}", twitterException)
+        promise.failure(twitterException)
       }
     })
+
+    promise
   }
 }

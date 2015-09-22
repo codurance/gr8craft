@@ -18,9 +18,15 @@ case object Done extends Message
 
 case object Skip extends Message
 
+case class SuccessfullyTweeted(inspiration: Inspiration) extends Message
+
+case class FailedToTweet(inspiration: Inspiration) extends Message
+
 case class AddInspiration(inspiration: Inspiration) extends Message
 
 case class Inspire(inspiration: Inspiration) extends Message
 
-case class Tweet(tweet: String) extends Message
+case class Tweet(tweet: Inspiration) extends Message
+
+case class DirectMessage(sender: String, directMessage: String) extends Message
 

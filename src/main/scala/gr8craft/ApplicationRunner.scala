@@ -17,9 +17,7 @@ class ApplicationRunner(scheduler: ActorRef) {
 
 object ApplicationRunner {
 
-  def inspirations: Set[Inspiration] = Set(
-
-  )
+  def inspirations: Set[Inspiration] = Set()
 
   def main(args: Array[String]) {
     val application: ApplicationRunner = createApplication(initalInspirations = inspirations)
