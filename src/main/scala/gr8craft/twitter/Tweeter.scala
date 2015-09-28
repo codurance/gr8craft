@@ -19,7 +19,7 @@ class Tweeter(twitterService: TwitterService) extends Actor {
 
   def tweet(inspiration: Inspiration): Unit = {
     val actorToInform = sender()
-    val future = twitterService.tweet(s"Your hourly recommended inspiration about ${inspiration.topic}: ${inspiration.location}")
+    val future = twitterService.tweet(inspiration.toString)
 
     future.onComplete {
       case Success(message) => actorToInform ! SuccessfullyTweeted(inspiration)

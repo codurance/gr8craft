@@ -28,8 +28,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
         assert(deleted)
       }
   }
-
-
+  
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
       application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.second)

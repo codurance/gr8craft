@@ -28,7 +28,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
 
   test("forward tweets to Twitter") {
     (twitterService.tweet _)
-      .expects(s"Your hourly recommended inspiration about $topic: $location")
+      .expects(inspiration.toString)
       .returns(successful(Done))
 
     tweeter ! Tweet(inspiration)
@@ -37,14 +37,13 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("informs of unsuccessful tweets") {
-    (twitterService.tweet _).expects(s"Your hourly recommended inspiration about $topic: $location")
+    (twitterService.tweet _).expects(inspiration.toString)
       .returns(failed(new RuntimeException()))
 
     tweeter ! Tweet(inspiration)
 
     expectMsg(FailedToTweet(inspiration))
   }
-
 
   test("don't accept direct messages that do not come from the moderator") {
     (twitterService.getDirectMessagesFrom _)
