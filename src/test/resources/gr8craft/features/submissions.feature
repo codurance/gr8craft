@@ -11,4 +11,4 @@ Feature: Receiving and reviewing submissions
   Scenario: Accepting submissions
     Given "gr8craftmod" sends a DM to gr8craft with the text "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
     When the hour is reached
-    Then gr8craft tweets "Your hourly recommended inspiration about DDD: http://t.co/lqJDZlGcJE via @gr8contributor"
+    Then gr8craft tweets "Your hourly recommended inspiration about DDD: http://t.co/lqJDZlGcJE (via @gr8contributor)"

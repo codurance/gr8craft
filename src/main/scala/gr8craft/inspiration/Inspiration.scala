@@ -1,6 +1,10 @@
 package gr8craft.inspiration
 
-class Inspiration(_topic: String, _location: String, _contributor: String = "") extends Serializable {
+import scala.Option.empty
+
+class Inspiration(_topic: String, _location: String, _contributor: Option[String] = empty) extends Serializable {
+  val FORMATTING = s"Your hourly recommended inspiration about $topic: $location"
+
   def topic = _topic
 
   def location = _location
@@ -12,5 +16,7 @@ class Inspiration(_topic: String, _location: String, _contributor: String = "") 
 
   override def hashCode = 41 * (41 + topic.hashCode) + location.hashCode
 
-  override def toString: String = "Inspiration: topic: %s location: %s".format(topic, location)
+  override def toString: String = {
+    FORMATTING + _contributor.fold(ifEmpty = "")(contributor => s" (via ${contributor})")
+  }
 }
