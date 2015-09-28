@@ -1,6 +1,6 @@
 package gr8craft.inspiration
 
-class Inspiration(_topic: String, _location: String) extends Serializable {
+class Inspiration(_topic: String, _location: String, _contributor: String = "") extends Serializable {
   def topic = _topic
 
   def location = _location

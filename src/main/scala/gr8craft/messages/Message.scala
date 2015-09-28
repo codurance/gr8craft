@@ -1,7 +1,6 @@
 package gr8craft.messages
 
 import java.time.LocalDateTime
-import java.time.LocalDateTime.MIN
 
 import gr8craft.inspiration.Inspiration
 

@@ -1,5 +1,7 @@
 package gr8craft.featuresmocked
 
+import java.time.LocalDateTime
+
 import gr8craft.ApplicationFactory._
 import gr8craft.ApplicationRunner
 import gr8craft.inspiration.Inspiration
@@ -25,9 +27,9 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
       }
     }
 
-    override def getDirectMessages: Future[DirectMessage] = {
+    override def getDirectMessagesFrom(startingTime: LocalDateTime): Future[Set[DirectMessage]] = {
       Future {
-        new DirectMessage(sender, directMessage)
+        Set(new DirectMessage(sender, directMessage))
       }
     }
   }
