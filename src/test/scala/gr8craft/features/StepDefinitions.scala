@@ -1,9 +1,8 @@
 package gr8craft.features
 
 import gr8craft.ApplicationFactory.createApplication
-import gr8craft.ApplicationRunner
+import gr8craft.{AkkaSteps, ApplicationRunner}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
-import gr8craft.featuresmocked.AkkaSteps
 import gr8craft.inspiration.Inspiration
 import gr8craft.twitter.TwitterApiService
 import twitter4j._
@@ -28,7 +27,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
         assert(deleted)
       }
   }
-  
+
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
       application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.second)

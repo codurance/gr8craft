@@ -3,7 +3,7 @@ package gr8craft.featuresmocked
 import java.time.LocalDateTime
 
 import gr8craft.ApplicationFactory._
-import gr8craft.ApplicationRunner
+import gr8craft.{AkkaSteps, ApplicationRunner}
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages.{DirectMessage, Done, Message}
 import gr8craft.twitter.TwitterService

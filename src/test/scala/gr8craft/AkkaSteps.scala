@@ -1,4 +1,4 @@
-package gr8craft.featuresmocked
+package gr8craft
 
 import akka.actor.ActorSystem
 import akka.testkit.TestKit
