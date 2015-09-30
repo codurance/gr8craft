@@ -19,9 +19,14 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   val location: String = "location"
   val contributor: String = "contributor"
 
+  val anotherTopic: String = "anotherTopic"
+  val anotherLocation: String = "anotherLocation"
+  val anotherContributor: String = "anotherContributor"
+
   val inspiration = new Inspiration(topic, location)
 
   val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
+  val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor)
   val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
   val lastRequested = LocalDateTime.now
 
@@ -60,11 +65,11 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   test("fetch direct messages from moderator and recommend authors from it") {
     (twitterService.getDirectMessagesFrom _)
       .expects(lastRequested)
-      .returns(successful(Set(directMessage)))
+      .returns(successful(Set(directMessage, laterDirectMessage)))
 
     tweeter ! FetchDirectMessages(lastRequested)
 
     expectMsg(AddInspiration(new Inspiration(topic, location, Option.apply(contributor))))
+    expectMsg(AddInspiration(new Inspiration(anotherTopic, anotherLocation, Option.apply(anotherContributor))))
   }
-
 }

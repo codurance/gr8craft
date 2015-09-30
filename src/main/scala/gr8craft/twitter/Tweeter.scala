@@ -11,6 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
 class Tweeter(twitterService: TwitterService) extends Actor {
+  private val APPROVED_MODERATOR = "gr8craftmod"
 
   override def receive: Receive = {
     case Tweet(inspiration: Inspiration) => tweet(inspiration)
@@ -39,7 +40,7 @@ class Tweeter(twitterService: TwitterService) extends Actor {
 
   def addInspirations(messages: Set[DirectMessage], actorToInform: ActorRef): Unit = {
     messages.filter(message =>
-      message.sender == "gr8craftmod")
+      message.sender == APPROVED_MODERATOR)
       .map(message =>
       new Submission(message.directMessage).parse)
       .foreach(option =>
