@@ -23,7 +23,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   Before() {
     _ =>
       deleteExistingTimeline()
-      eventually(timeout(100.seconds), interval(1.second)) {
+      eventually(timeout(2.seconds), interval(1.second)) {
         assert(deleted)
       }
   }
