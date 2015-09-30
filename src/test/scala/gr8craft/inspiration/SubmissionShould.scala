@@ -3,7 +3,7 @@ package gr8craft.inspiration
 import org.scalatest.{Matchers, FunSuite}
 
 class SubmissionShould extends FunSuite with Matchers {
-  test("be parsed from a string") {
+  test("parse a valid Submission to an inspiration") {
     val parsedInspiration = new Submission("inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor").parse
 
     parsedInspiration.get shouldEqual new Inspiration("DDD", "http://t.co/lqJDZlGcJE", Option.apply("@gr8contributor"))

@@ -22,5 +22,4 @@ class InspirationShould extends FunSuite with Matchers {
 
     inspiration shouldEqual equalInspiration
   }
-
 }

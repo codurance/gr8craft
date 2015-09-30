@@ -20,6 +20,8 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   val contributor: String = "contributor"
 
   val inspiration = new Inspiration(topic, location)
+
+  val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
   val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
   val lastRequested = LocalDateTime.now
 
@@ -54,4 +56,15 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
 
     expectNoMsg()
   }
+
+  test("fetch direct messages from moderator and recommend authors from it") {
+    (twitterService.getDirectMessagesFrom _)
+      .expects(lastRequested)
+      .returns(successful(Set(directMessage)))
+
+    tweeter ! FetchDirectMessages(lastRequested)
+
+    expectMsg(AddInspiration(new Inspiration(topic, location, Option.apply(contributor))))
+  }
+
 }
