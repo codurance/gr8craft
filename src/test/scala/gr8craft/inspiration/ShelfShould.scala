@@ -9,7 +9,7 @@ class ShelfShould extends AkkaTest("ShelfShould") {
   val shelf = TestActorRef(Props(new Shelf(Set.empty)))
   val inspiration = new Inspiration("topic", "location")
 
-  test("return inspirations on the shelf") {
+  test("return inspiration on the shelf") {
     shelf ! AddInspiration(inspiration)
 
     shelf ! InspireMe
@@ -17,7 +17,7 @@ class ShelfShould extends AkkaTest("ShelfShould") {
     expectMsg(Inspire(inspiration))
   }
 
-  test("add new inspirations to the end of the shelf") {
+  test("add new inspiration to the end of the shelf") {
     val laterInspiration = new Inspiration("another topic", "another location")
 
     shelf ! AddInspiration(inspiration)
@@ -29,7 +29,7 @@ class ShelfShould extends AkkaTest("ShelfShould") {
     expectMsg(Inspire(laterInspiration))
   }
 
-  test("skip inspirations if instructed") {
+  test("skip inspiration if instructed") {
     val laterInspiration = new Inspiration("another topic", "another location")
 
     shelf ! AddInspiration(inspiration)
@@ -41,7 +41,7 @@ class ShelfShould extends AkkaTest("ShelfShould") {
     expectMsg(Inspire(laterInspiration))
   }
 
-  test("give no inspiration if it runs out of inspirations") {
+  test("give no inspiration if it runs out of inspiration") {
     shelf ! InspireMe
 
     expectNoMsg()

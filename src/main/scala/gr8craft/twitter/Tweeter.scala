@@ -3,7 +3,7 @@ package gr8craft.twitter
 import java.time.LocalDateTime
 
 import akka.actor.{Actor, ActorRef}
-import gr8craft.inspiration.{Submission, Inspiration}
+import gr8craft.inspiration.{Inspiration, Submission}
 import gr8craft.messages._
 
 import scala.collection.Set
@@ -14,13 +14,13 @@ class Tweeter(twitterService: TwitterService) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"
 
   override def receive: Receive = {
-    case Tweet(inspiration: Inspiration) => tweet(inspiration)
+    case GoAndTweet(inspiration: Inspiration) => tweet(inspiration)
     case FetchDirectMessages(lastFetched: LocalDateTime) => fetchDirectMessages(lastFetched)
   }
 
   def tweet(inspiration: Inspiration): Unit = {
     val actorToInform = sender()
-    val future = twitterService.tweet(inspiration.toString)
+    val future = twitterService.tweet(new Tweet(inspiration).toString)
 
     future.onComplete {
       case Success(message) => actorToInform ! SuccessfullyTweeted(inspiration)
@@ -42,9 +42,9 @@ class Tweeter(twitterService: TwitterService) extends Actor {
     messages.filter(message =>
       message.sender == APPROVED_MODERATOR)
       .map(message =>
-      new Submission(message.directMessage).parse)
+        new Submission(message.directMessage).parse)
       .foreach(option =>
-      option.foreach(inspiration =>
-        actorToInform ! AddInspiration(inspiration)))
+        option.foreach(inspiration =>
+          actorToInform ! AddInspiration(inspiration)))
   }
 }

@@ -1,6 +1,6 @@
 package gr8craft.inspiration
 
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.{FunSuite, Matchers}
 
 class SubmissionShould extends FunSuite with Matchers {
   test("parse a valid Submission to an inspiration") {

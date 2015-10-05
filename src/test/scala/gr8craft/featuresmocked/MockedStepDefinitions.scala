@@ -3,10 +3,10 @@ package gr8craft.featuresmocked
 import java.time.LocalDateTime
 
 import gr8craft.ApplicationFactory._
-import gr8craft.{AkkaSteps, ApplicationRunner}
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages.{DirectMessage, Done, Message}
-import gr8craft.twitter.TwitterService
+import gr8craft.twitter.{Tweet, TwitterService}
+import gr8craft.{AkkaSteps, ApplicationRunner}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -49,7 +49,7 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
   Then( """^gr8craft tweets "([^"]*)"$""") {
     (expectedTweet: String) =>
       awaitCond(twitterService.tweetSent != null, 1.second)
-      twitterService.tweetSent shouldBe expectedTweet
+      twitterService.tweetSent.toString shouldBe expectedTweet
   }
 
   Given( """^gr8craft receives a mention from "([^"]*)" with the recommendation "([^"]*)"$""") {

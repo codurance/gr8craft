@@ -28,7 +28,7 @@ case class AddInspiration(inspiration: Inspiration) extends Message
 
 case class Inspire(inspiration: Inspiration) extends Message
 
-case class Tweet(tweet: Inspiration) extends Message
+case class GoAndTweet(tweet: Inspiration) extends Message
 
 case class DirectMessage(sender: String, directMessage: String) extends Message
 

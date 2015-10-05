@@ -1,11 +1,11 @@
 package gr8craft.twitter
 
 import java.time.LocalDateTime
-import java.time.LocalDateTime._
-import gr8craft.messages._
+
 import akka.actor.Props
 import gr8craft.AkkaTest
 import gr8craft.inspiration.Inspiration
+import gr8craft.messages._
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
@@ -38,7 +38,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
       .expects(inspiration.toString)
       .returns(successful(Done))
 
-    tweeter ! Tweet(inspiration)
+    tweeter ! GoAndTweet(inspiration)
 
     expectMsg(SuccessfullyTweeted(inspiration))
   }
@@ -47,7 +47,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
     (twitterService.tweet _).expects(inspiration.toString)
       .returns(failed(new RuntimeException()))
 
-    tweeter ! Tweet(inspiration)
+    tweeter ! GoAndTweet(inspiration)
 
     expectMsg(FailedToTweet(inspiration))
   }

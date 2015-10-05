@@ -48,7 +48,7 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
   test("receive a new inspiration and use it") {
     curator ! Inspire(inspiration)
 
-    tweeter.expectMsg(Tweet(inspiration))
+    tweeter.expectMsg(GoAndTweet(inspiration))
   }
 
   test("receive a new inspiration for the shelf and forward it") {
@@ -92,14 +92,14 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
 
   test("recover Inspire by doing nothing") {
     curator ! Inspire(inspiration)
-    tweeter.expectMsg(Tweet(inspiration))
+    tweeter.expectMsg(GoAndTweet(inspiration))
 
     recoverFromShutdown()
 
     shelf.expectNoMsg()
     tweeter.expectNoMsg()
   }
-  
+
   private def recoverFromShutdown(): Unit = {
     curator ! Kill
     curator = createCurator()

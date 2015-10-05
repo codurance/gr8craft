@@ -1,10 +1,10 @@
 package gr8craft.features
 
 import gr8craft.ApplicationFactory.createApplication
-import gr8craft.{AkkaSteps, ApplicationRunner}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.inspiration.Inspiration
 import gr8craft.twitter.TwitterApiService
+import gr8craft.{AkkaSteps, ApplicationRunner}
 import twitter4j._
 
 import scala.collection.JavaConverters._

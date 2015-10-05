@@ -4,7 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import gr8craft.TwitterFactoryWithConfiguration.createTwitter
 import gr8craft.inspiration.{Inspiration, Shelf}
 import gr8craft.scheduling.{Clock, ScheduledExecutor}
-import gr8craft.twitter.{Curator, Tweeter, TwitterApiService, TwitterService}
+import gr8craft.twitter._
 
 import scala.concurrent.duration._
 
@@ -14,7 +14,6 @@ object ApplicationFactory {
     val shelf = system.actorOf(Props(new Shelf(initalInspirations)))
     val tweetRunner = system.actorOf(Props(new Curator(tweeter, shelf, new Clock())))
     val scheduler = system.actorOf(Props(new ScheduledExecutor(tweetInterval, tweetRunner)))
-
     new ApplicationRunner(scheduler)
   }
 }

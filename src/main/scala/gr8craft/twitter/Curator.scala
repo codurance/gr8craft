@@ -49,7 +49,7 @@ class Curator(tweeter: ActorRef, shelf: ActorRef, clock: Clock) extends Persiste
 
   private def tweet(inspiration: Inspiration): Unit = {
     persist(Tweeted(inspiration))(_ =>
-      tweeter ! Tweet(inspiration)
+      tweeter ! GoAndTweet(inspiration)
     )
   }
 }

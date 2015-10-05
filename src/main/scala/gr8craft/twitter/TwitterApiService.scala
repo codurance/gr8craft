@@ -14,7 +14,7 @@ class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Loggi
   override def tweet(tweet: String): Future[Message] = {
     val promise: Promise[Message] = handleResponse
 
-    sendTweet(tweet)
+    sendTweet(tweet.toString)
 
     promise.future
   }

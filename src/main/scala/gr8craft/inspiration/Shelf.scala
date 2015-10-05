@@ -3,8 +3,7 @@ package gr8craft.inspiration
 import akka.actor.Actor
 import gr8craft.messages._
 
-
-case class Shelf(inspirations: Set[Inspiration]) extends Actor {
+class Shelf(inspirations: Set[Inspiration]) extends Actor {
 
   import context._
 
