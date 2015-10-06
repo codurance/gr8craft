@@ -7,7 +7,7 @@ Feature: Receiving and reviewing submissions
   I want to review received new submissions via Twitter direct message
   and approve them to be included in the hourly tweets
 
-
+  @work-in-progress
   Scenario: Accepting submissions
     Given "gr8craftmod" sends a DM to gr8craft with the text "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
     When the hour is reached
