@@ -4,10 +4,10 @@ import akka.actor.ActorRef
 import akka.persistence.PersistentActor
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
-import com.codurance.gr8craft.model.twitter.DirectMessage
+import com.codurance.gr8craft.model.twitter.{DirectMessageId, DirectMessage}
 
 class RegularActions(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
-  private var lastFetched: Option[Long] = None
+  private var lastFetched: Option[DirectMessageId] = None
 
   override def persistenceId: String = "RegularActions"
 

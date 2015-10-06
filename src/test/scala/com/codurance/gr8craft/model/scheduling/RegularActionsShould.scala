@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
-import com.codurance.gr8craft.model.twitter.DirectMessage
+import com.codurance.gr8craft.model.twitter.{DirectMessageId, DirectMessage}
 import com.codurance.gr8craft.util.AkkaTest
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
@@ -12,13 +12,13 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFactory {
-  private val inspiration = new Inspiration("topic", "location")
-  private val lastId = 42L
+  private val inspiration = Inspiration("topic", "location")
+  private val lastId = DirectMessageId(42L)
 
   private val textOfDirectMessage = "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
-  private val directMessage = new DirectMessage("sender", textOfDirectMessage, lastId)
+  private val directMessage = DirectMessage("sender", textOfDirectMessage, lastId)
   private val textOfLaterDirectMessage = "inspiration: Another | location: url | contributor: @anotherContributor"
-  private val laterDirectMessage = new DirectMessage("sender", textOfLaterDirectMessage, lastId)
+  private val laterDirectMessage = DirectMessage("sender", textOfLaterDirectMessage, lastId)
 
   private val shelf = TestProbe()
   private val tweeter = TestProbe()

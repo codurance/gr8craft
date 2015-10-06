@@ -1,7 +1,7 @@
 package com.codurance.gr8craft.messages
 
 import com.codurance.gr8craft.model.inspiration.Inspiration
-import com.codurance.gr8craft.model.twitter.DirectMessage
+import com.codurance.gr8craft.model.twitter.{DirectMessageId, DirectMessage}
 
 sealed trait Message
 
@@ -29,5 +29,5 @@ case class GoAndTweet(tweet: Inspiration) extends Message
 
 case class AddDirectMessage(directMessage: DirectMessage) extends Message
 
-case class FetchDirectMessages(lastFetched: Option[Long]) extends Message
+case class FetchDirectMessages(lastFetched: Option[DirectMessageId]) extends Message
 

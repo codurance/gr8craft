@@ -19,7 +19,7 @@ class Tweeter(twitterService: TwitterService) extends Actor {
     twitterService.tweet(new Tweet(inspiration), { () => actorToInform ! SuccessfullyTweeted(inspiration) }, { () => actorToInform ! FailedToTweet(inspiration) })
   }
 
-  def fetchDirectMessages(lastFetched: Option[Long]): Unit = {
+  def fetchDirectMessages(lastFetched: Option[DirectMessageId]): Unit = {
     val actorToInform = sender()
     twitterService.fetchDirectMessagesAfter(lastFetched, { (messages) => addInspirations(messages, actorToInform) })
   }

@@ -22,10 +22,10 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
 
   private val inspiration = new Inspiration(topic, location)
 
-  private val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 1L)
-  private val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor, 2L)
-  private val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 3L)
-  private val lastRequested = 42L
+  private val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, DirectMessageId(1L))
+  private val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor, DirectMessageId(2L))
+  private val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, DirectMessageId(3L))
+  private val lastRequested = DirectMessageId(42L)
 
   private var twitterRequestSuccessful: Boolean = true
   private var directMessages: List[DirectMessage] = List()
@@ -35,7 +35,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
       if (twitterRequestSuccessful) successAction.apply() else failureAction.apply()
     }
 
-    override def fetchDirectMessagesAfter(lastFetched: Option[Long], successAction: (List[DirectMessage]) => Unit): Unit = {
+    override def fetchDirectMessagesAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = {
       successAction.apply(directMessages)
     }
   }
