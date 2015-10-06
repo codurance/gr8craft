@@ -3,7 +3,7 @@ package com.codurance.gr8craft.model.scheduling
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.inspiration.Inspiration
+import com.codurance.gr8craft.model.inspiration.{Suggestion, Inspiration}
 import com.codurance.gr8craft.model.twitter.DirectMessage
 import com.codurance.gr8craft.util.AkkaTest
 import org.junit.runner.RunWith
@@ -13,9 +13,12 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFactory {
   private val inspiration = new Inspiration("topic", "location")
-  private val laterInspiration = new Inspiration("anotherTopic", "anotherLocation")
   private val lastId = 42L
-  private val directMessage = new DirectMessage("sender", "text", lastId)
+  
+  private val textOfDirectMessage = "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
+  private val directMessage = new DirectMessage("sender", textOfDirectMessage, lastId)
+  private val textOfLaterDirectMessage = "inspiration: Another | location: url | contributor: @anotherContributor"
+  private val laterDirectMessage = new DirectMessage("sender", textOfLaterDirectMessage, lastId)
 
   private val shelf = TestProbe()
   private val tweeter = TestProbe()
@@ -34,7 +37,7 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
 
     tweeter.expectMsg(FetchDirectMessages(None))
 
-    curator ! GotDirectMessage(directMessage)
+    curator ! AddDirectMessage(directMessage)
     curator ! Trigger
 
     tweeter.expectMsg(FetchDirectMessages(Some(lastId)))
@@ -47,9 +50,9 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
   }
 
   test("receive a new inspiration for the shelf and forward it") {
-    curator ! AddInspiration(inspiration)
+    curator ! AddDirectMessage(directMessage)
 
-    shelf.expectMsg(AddInspiration(inspiration))
+    expectInspirationAddedFrom(textOfDirectMessage)
   }
 
   test("recover trigger by skipping text to shelf") {
@@ -61,10 +64,10 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
     shelf.expectMsg(Skip)
   }
 
-  test("recover trigger by  not interacting with Twitter, but continue from last id asked afterwards") {
+  test("recover trigger by not interacting with Twitter, but continue from last id asked afterwards") {
     curator ! Trigger
     tweeter.expectMsg(FetchDirectMessages(None))
-    curator ! GotDirectMessage(directMessage)
+    curator ! AddDirectMessage(directMessage)
 
     recoverFromShutdown()
 
@@ -74,16 +77,16 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
     tweeter.expectMsg(FetchDirectMessages(Some(lastId)))
   }
 
-  test("recover AddInspiration by replaying it to shelf") {
-    curator ! AddInspiration(inspiration)
-    shelf.expectMsg(AddInspiration(inspiration))
-    curator ! AddInspiration(laterInspiration)
-    shelf.expectMsg(AddInspiration(laterInspiration))
+  test("recover getting DirectMessages") {
+    curator ! AddDirectMessage(directMessage)
+    expectInspirationAddedFrom(textOfDirectMessage)
+    curator ! AddDirectMessage(laterDirectMessage)
+    expectInspirationAddedFrom(textOfLaterDirectMessage)
 
     recoverFromShutdown()
 
-    shelf.expectMsg(AddInspiration(inspiration))
-    shelf.expectMsg(AddInspiration(laterInspiration))
+    expectInspirationAddedFrom(textOfDirectMessage)
+    expectInspirationAddedFrom(textOfLaterDirectMessage)
   }
 
   test("recover Inspire by doing nothing") {
@@ -103,5 +106,9 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
 
   private def createCurator(): ActorRef = {
     system.actorOf(Props(new RegularActions(tweeter.ref, shelf.ref)))
+  }
+
+  private def expectInspirationAddedFrom(text: String): AddInspiration = {
+    shelf.expectMsg(AddInspiration(new Suggestion(text).parse.get))
   }
 }

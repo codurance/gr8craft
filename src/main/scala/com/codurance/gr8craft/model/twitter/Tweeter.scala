@@ -27,6 +27,6 @@ class Tweeter(twitterService: TwitterService) extends Actor {
   def addInspirations(messages: List[DirectMessage], actorToInform: ActorRef): Unit = {
     messages
       .filter(message => message.sender == APPROVED_MODERATOR)
-      .foreach(message => actorToInform ! GotDirectMessage(message))
+      .foreach(message => actorToInform ! AddDirectMessage(message))
   }
 }

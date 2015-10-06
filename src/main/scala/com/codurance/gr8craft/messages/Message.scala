@@ -15,8 +15,6 @@ case object Trigger extends Message
 
 case object InspireMe extends Message
 
-case object Done extends Message
-
 case object Skip extends Message
 
 case class SuccessfullyTweeted(inspiration: Inspiration) extends Message
@@ -29,7 +27,7 @@ case class Inspire(inspiration: Inspiration) extends Message
 
 case class GoAndTweet(tweet: Inspiration) extends Message
 
-case class GotDirectMessage(directMessage: DirectMessage) extends Message
+case class AddDirectMessage(directMessage: DirectMessage) extends Message
 
 case class FetchDirectMessages(lastFetched: Option[Long]) extends Message
 

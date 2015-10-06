@@ -71,7 +71,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
 
     tweeter ! FetchDirectMessages(Some(lastRequested))
 
-    expectMsg(GotDirectMessage(directMessage))
-    expectMsg(GotDirectMessage(laterDirectMessage))
+    expectMsg(AddDirectMessage(directMessage))
+    expectMsg(AddDirectMessage(laterDirectMessage))
   }
 }
