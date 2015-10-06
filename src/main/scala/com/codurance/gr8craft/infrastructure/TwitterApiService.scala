@@ -1,6 +1,6 @@
 package com.codurance.gr8craft.infrastructure
 
-import com.codurance.gr8craft.model.twitter.{DirectMessageId, DirectMessage, Tweet, TwitterService}
+import com.codurance.gr8craft.model.twitter.{DirectMessage, DirectMessageId, Tweet, TwitterService}
 import org.slf4s.Logging
 import twitter4j.{Paging, ResponseList, Status, Twitter}
 
