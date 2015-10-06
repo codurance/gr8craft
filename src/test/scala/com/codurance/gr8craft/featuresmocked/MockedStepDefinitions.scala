@@ -1,10 +1,10 @@
 package com.codurance.gr8craft.featuresmocked
 
+import com.codurance.gr8craft.Gr8craft
 import com.codurance.gr8craft.Gr8craftFactory._
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.model.twitter.{DirectMessage, Tweet, TwitterService}
 import com.codurance.gr8craft.util.AkkaSteps
-import com.codurance.gr8craft.{Gr8craftFactory, Gr8craft}
 
 import scala.concurrent.duration._
 

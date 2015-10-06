@@ -1,8 +1,8 @@
 package com.codurance.gr8craft
 
 import akka.actor.{ActorSystem, Props}
+import com.codurance.gr8craft.infrastructure.TwitterApiService
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
-import com.codurance.gr8craft.infrastructure.{TwitterApiService, TwitterFactoryWithConfiguration}
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Shelf}
 import com.codurance.gr8craft.model.scheduling.{RegularActions, ScheduledExecutor}
 import com.codurance.gr8craft.model.twitter.{Tweeter, TwitterService}

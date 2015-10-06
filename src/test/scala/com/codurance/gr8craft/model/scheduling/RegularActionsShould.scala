@@ -3,7 +3,7 @@ package com.codurance.gr8craft.model.scheduling
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.inspiration.{Suggestion, Inspiration}
+import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
 import com.codurance.gr8craft.model.twitter.DirectMessage
 import com.codurance.gr8craft.util.AkkaTest
 import org.junit.runner.RunWith
@@ -14,7 +14,7 @@ import org.scalatest.junit.JUnitRunner
 class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFactory {
   private val inspiration = new Inspiration("topic", "location")
   private val lastId = 42L
-  
+
   private val textOfDirectMessage = "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
   private val directMessage = new DirectMessage("sender", textOfDirectMessage, lastId)
   private val textOfLaterDirectMessage = "inspiration: Another | location: url | contributor: @anotherContributor"

@@ -1,11 +1,11 @@
 package com.codurance.gr8craft.features
 
+import com.codurance.gr8craft.Gr8craft
 import com.codurance.gr8craft.Gr8craftFactory.createApplication
+import com.codurance.gr8craft.infrastructure.TwitterApiService
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
-import com.codurance.gr8craft.infrastructure.{TwitterApiService, TwitterFactoryWithConfiguration}
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.util.AkkaSteps
-import com.codurance.gr8craft.{Gr8craftFactory, Gr8craft}
 import twitter4j._
 
 import scala.collection.JavaConverters._
@@ -35,19 +35,22 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
     (expectedTweet: String) =>
-      eventually(timeout(100.seconds), interval(1.second)) {
-        val newestTweet = requestNewestTweet()
-        newestTweet.isDefined shouldBe true
-        newestTweet
-      }.map(_.getText).get shouldEqual expectedTweet
+      getNewestTweet.map(_.getText).get shouldEqual expectedTweet
   }
 
   Given( """^"([^"]*)" sends a DM to gr8craft with the text "([^"]*)"$""") {
     (sender: String, directMessage: String) =>
       application = createApplication(system, twitterService, tweetInterval = 1.second)
-      clearDirectMessagesAndSend(createTwitter(sender), directMessage)
+      sendDirectMessage(createTwitter(sender), directMessage)
   }
 
+  private def getNewestTweet: Option[Status] = {
+    eventually(timeout(3.seconds), interval(1.second)) {
+      val newestTweet = requestNewestTweet()
+      newestTweet.isDefined shouldBe true
+      newestTweet
+    }
+  }
 
   private def requestNewestTweet(): Option[Status] = {
     twitter.getUserTimeline
@@ -55,20 +58,20 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
       .headOption
   }
 
-  private def clearDirectMessagesAndSend(sender: Twitter, directMessage: String): Unit = {
-    deleteExistingPrivateMessages(sender)
+  private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
+    deleteExistingDirectMessages(sender)
 
     sender.sendDirectMessage(twitter.getId, directMessage)
 
-    eventually(timeout(100.seconds), interval(1.second)) {
+    eventually(timeout(3.seconds), interval(1.second)) {
       getNewestDM(twitter).getText shouldBe directMessage
     }
   }
 
-  private def deleteExistingPrivateMessages(sender: Twitter): Unit = {
+  private def deleteExistingDirectMessages(sender: Twitter): Unit = {
     sender.getSentDirectMessages
       .asScala
-      .foreach(message => twitter.destroyDirectMessage(message.getId))
+      .foreach(message => sender.destroyDirectMessage(message.getId))
   }
 
   private def getNewestDM(twitter: Twitter): DirectMessage = {

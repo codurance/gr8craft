@@ -2,7 +2,7 @@ package com.codurance.gr8craft.infrastructure
 
 import com.codurance.gr8craft.model.twitter.{DirectMessage, Tweet, TwitterService}
 import org.slf4s.Logging
-import twitter4j.{ResponseList, Status, Paging, Twitter}
+import twitter4j.{Paging, ResponseList, Status, Twitter}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
