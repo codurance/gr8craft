@@ -21,6 +21,10 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
     twitter.getUserTimeline
       .asScala
       .foreach(status => twitter.destroyStatus(status.getId))
+
+    twitter.getDirectMessages
+      .asScala
+      .foreach(message => twitter.destroyDirectMessage(message.getId))
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
@@ -59,24 +63,18 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
-    deleteExistingDirectMessages(sender)
-
-    sender.sendDirectMessage(twitter.getId, directMessage)
+    eventually(timeout(3.seconds), interval(1.second)) {
+      sender.sendDirectMessage(twitter.getId, directMessage)
+    }
 
     eventually(timeout(3.seconds), interval(1.second)) {
-      getNewestDM(twitter).getText shouldBe directMessage
+      getNewestDM(twitter).isDefined shouldBe true
     }
   }
 
-  private def deleteExistingDirectMessages(sender: Twitter): Unit = {
-    sender.getSentDirectMessages
-      .asScala
-      .foreach(message => sender.destroyDirectMessage(message.getId))
-  }
-
-  private def getNewestDM(twitter: Twitter): DirectMessage = {
+  private def getNewestDM(twitter: Twitter): Option[DirectMessage] = {
     twitter.getDirectMessages
       .asScala
-      .head
+      .headOption
   }
 }
