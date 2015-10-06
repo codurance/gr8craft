@@ -18,13 +18,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   private val twitterService = new TwitterApiService(twitter)
 
   Before() { _ =>
-    twitter.getUserTimeline
-      .asScala
-      .foreach(status => twitter.destroyStatus(status.getId))
-
-    twitter.getDirectMessages
-      .asScala
-      .foreach(message => twitter.destroyDirectMessage(message.getId))
+    deletePreviousDirectMessages()
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
@@ -33,6 +27,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   When( """^the hour is reached$""") {
+    deletePreviousTweets()
     () =>
       application.startTwitterBot()
   }
@@ -46,6 +41,18 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
     (sender: String, directMessage: String) =>
       application = createApplication(system, twitterService, tweetInterval = 1.second)
       sendDirectMessage(createTwitter(sender), directMessage)
+  }
+
+  private def deletePreviousDirectMessages(): Unit = {
+    twitter.getDirectMessages
+      .asScala
+      .foreach(message => twitter.destroyDirectMessage(message.getId))
+  }
+
+  private def deletePreviousTweets(): Unit = {
+    twitter.getUserTimeline
+      .asScala
+      .foreach(status => twitter.destroyStatus(status.getId))
   }
 
   private def getNewestTweet: Option[Status] = {
