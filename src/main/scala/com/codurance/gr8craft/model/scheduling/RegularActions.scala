@@ -7,7 +7,7 @@ import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.model.twitter.DirectMessage
 
 class RegularActions(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
-  var lastFetched: Option[Long] = None
+  private var lastFetched: Option[Long] = None
 
   override def persistenceId: String = "RegularActions"
 

@@ -9,9 +9,11 @@ import com.codurance.gr8craft.{Gr8craftFactory, Gr8craft}
 import scala.concurrent.duration._
 
 class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
+  private var application: Gr8craft = null
 
-  var directMessages: List[DirectMessage] = List()
-  val twitterService = new TwitterService {
+  private var directMessages: List[DirectMessage] = List()
+
+  private val twitterService = new TwitterService {
     var tweet: String = null
 
     def tweetSent: String = this.tweet
@@ -23,8 +25,6 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
       successAction.apply()
     }
   }
-
-  var application: Gr8craft = null
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>

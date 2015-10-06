@@ -12,9 +12,9 @@ import scala.concurrent.duration._
 
 @RunWith(classOf[JUnitRunner])
 class Gr8craftShould extends FunSuite with MockFactory {
-  val system = ActorSystem("Gr8craftShould")
-  val scheduler = new JavaTestKit(system)
-  val applicationRunner = new Gr8craft(scheduler.getRef)
+  private val system = ActorSystem("Gr8craftShould")
+  private val scheduler = new JavaTestKit(system)
+  private val applicationRunner = new Gr8craft(scheduler.getRef)
 
   test("schedule the execution") {
     applicationRunner.startTwitterBot()

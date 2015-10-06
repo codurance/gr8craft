@@ -13,9 +13,9 @@ import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
 
-  val twitter = createTwitter()
-  val twitterService = new TwitterApiService(twitter)
-  var application: Gr8craft = null
+  private var application: Gr8craft = null
+  private val twitter = createTwitter()
+  private val twitterService = new TwitterApiService(twitter)
 
   Before() { _ =>
     twitter.getUserTimeline

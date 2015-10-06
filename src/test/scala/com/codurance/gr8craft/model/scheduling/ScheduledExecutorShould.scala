@@ -15,8 +15,8 @@ import scala.concurrent.duration._
 @RunWith(classOf[JUnitRunner])
 class ScheduledExecutorShould extends AkkaTest("ScheduledExecutorShould") with DefaultTimeout with BeforeAndAfterAll with ScalaFutures {
 
-  val toBeScheduled = new JavaTestKit(system)
-  val scheduler = TestActorRef(Props(new ScheduledExecutor(1.nanosecond, toBeScheduled.getRef)))
+  private val toBeScheduled = new JavaTestKit(system)
+  private val scheduler = TestActorRef(Props(new ScheduledExecutor(1.nanosecond, toBeScheduled.getRef)))
 
   override def afterAll() {
     scheduler ! Stop

@@ -6,8 +6,8 @@ import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip
 import com.codurance.gr8craft.util.AkkaTest
 
 class ShelfShould extends AkkaTest("ShelfShould") {
-  val shelf = TestActorRef(Props(new Shelf(Set.empty)))
-  val inspiration = new Inspiration("topic", "location")
+  private val shelf = TestActorRef(Props(new Shelf(Set.empty)))
+  private val inspiration = new Inspiration("topic", "location")
 
   test("return inspiration on the shelf") {
     shelf ! AddInspiration(inspiration)

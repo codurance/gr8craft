@@ -12,15 +12,15 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFactory {
-  val inspiration = new Inspiration("topic", "location")
-  val laterInspiration = new Inspiration("anotherTopic", "anotherLocation")
-  val lastId = 42L
-  val directMessage = new DirectMessage("sender", "text", lastId)
+  private val inspiration = new Inspiration("topic", "location")
+  private val laterInspiration = new Inspiration("anotherTopic", "anotherLocation")
+  private val lastId = 42L
+  private val directMessage = new DirectMessage("sender", "text", lastId)
 
-  val shelf = TestProbe()
-  val tweeter = TestProbe()
+  private val shelf = TestProbe()
+  private val tweeter = TestProbe()
 
-  var curator = createCurator()
+  private var curator = createCurator()
 
 
   test("receive a trigger and ask the shelf for the next inspiration") {

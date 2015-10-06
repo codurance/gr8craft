@@ -12,25 +12,25 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with ScalaFutures {
 
-  val topic: String = "topic"
-  val location: String = "location"
-  val contributor: String = "contributor"
+  private val topic: String = "topic"
+  private val location: String = "location"
+  private val contributor: String = "contributor"
 
-  val anotherTopic: String = "anotherTopic"
-  val anotherLocation: String = "anotherLocation"
-  val anotherContributor: String = "anotherContributor"
+  private val anotherTopic: String = "anotherTopic"
+  private val anotherLocation: String = "anotherLocation"
+  private val anotherContributor: String = "anotherContributor"
 
-  val inspiration = new Inspiration(topic, location)
+  private val inspiration = new Inspiration(topic, location)
 
-  val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 1L)
-  val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor, 2L)
-  val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 3L)
-  val lastRequested = 42L
+  private val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 1L)
+  private val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor, 2L)
+  private val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 3L)
+  private val lastRequested = 42L
 
-  var twitterRequestSuccessful: Boolean = true
-  var directMessages: List[DirectMessage] = List()
+  private var twitterRequestSuccessful: Boolean = true
+  private var directMessages: List[DirectMessage] = List()
 
-  val twitterService = new TwitterService {
+  private val twitterService = new TwitterService {
     override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
       if (twitterRequestSuccessful) successAction.apply() else failureAction.apply()
     }
@@ -40,7 +40,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
     }
   }
 
-  val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
+  private val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
 
   test("forward tweets to Twitter") {
     twitterRequestSuccessful = true
