@@ -9,36 +9,45 @@ import gr8craft.inspiration.Inspiration
 import gr8craft.messages._
 import gr8craft.scheduling.Clock
 
-case class Triggered(timestamp: LocalDateTime)
+case class Triggered(lastFetched: Long)
 
 case class Tweeted(inspiration: Inspiration)
 
 case class Added(inspiration: Inspiration)
 
-class Curator(tweeter: ActorRef, shelf: ActorRef, clock: Clock) extends PersistentActor {
-  var lastTriggered = MIN
+case class ReadDirectMessage(id: Long)
+
+class Curator(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
+  var lastFetched = 0L
 
   override def persistenceId: String = "Curator"
 
   override def receiveRecover: Receive = {
-    case Triggered(timestamp: LocalDateTime) =>
+    case Triggered(lastFetched: Long) =>
       shelf ! Skip
-      lastTriggered = timestamp
+      this.lastFetched = lastFetched
     case Tweeted(inspiration) =>
     case Added(inspiration) => shelf ! AddInspiration(inspiration)
+    case ReadDirectMessage(id) => lastFetched = id
   }
 
   override def receiveCommand: Receive = {
     case Trigger => triggerRegularActions()
     case AddInspiration(inspiration) => addInspiration(inspiration)
     case Inspire(inspiration) => tweet(inspiration)
+    case GotDirectMessage(directMessage) => gotDirectMessage(directMessage)
   }
 
-  def triggerRegularActions(): Unit = {
-    persist(Triggered(clock.now))(_ => {
+  private def gotDirectMessage(directMessage: DirectMessage): Unit = {
+    persist(ReadDirectMessage(directMessage.id))(_ => {
+      lastFetched = directMessage.id
+    })
+  }
+
+  private def triggerRegularActions(): Unit = {
+    persist(Triggered(lastFetched))(_ => {
       shelf ! InspireMe
-      tweeter ! FetchDirectMessages(lastTriggered)
-      lastTriggered = clock.now
+      tweeter ! FetchDirectMessages(lastFetched)
     })
   }
 

@@ -1,14 +1,10 @@
 package gr8craft.twitter
 
-import java.time.LocalDateTime
-import java.time.LocalDateTime.MIN
-
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import gr8craft.AkkaTest
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages._
-import gr8craft.scheduling.Clock
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
@@ -17,17 +13,14 @@ import org.scalatest.junit.JUnitRunner
 class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
   val inspiration = new Inspiration("topic", "location")
   val laterInspiration = new Inspiration("anotherTopic", "anotherLocation")
-  val currentTime = LocalDateTime.now
+  val lastId = 42L
+  val directMessage = new DirectMessage("sender", "text", lastId)
 
   val shelf = TestProbe()
   val tweeter = TestProbe()
-  val clock = mock[Clock]
 
   var curator = createCurator()
 
-  before {
-    (clock.now _).expects().returns(currentTime).anyNumberOfTimes()
-  }
 
   test("receive a trigger and ask the shelf for the next inspiration") {
     curator ! Trigger
@@ -38,11 +31,12 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
   test("receive a trigger and ask the tweeter for new DMs since last asked") {
     curator ! Trigger
 
-    tweeter.expectMsg(FetchDirectMessages(MIN))
+    tweeter.expectMsg(FetchDirectMessages(0L))
 
+    curator ! GotDirectMessage(directMessage)
     curator ! Trigger
 
-    tweeter.expectMsg(FetchDirectMessages(currentTime))
+    tweeter.expectMsg(FetchDirectMessages(lastId))
   }
 
   test("receive a new inspiration and use it") {
@@ -57,7 +51,7 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
     shelf.expectMsg(AddInspiration(inspiration))
   }
 
-  test("recover trigger by skipping message to shelf") {
+  test("recover trigger by skipping text to shelf") {
     curator ! Trigger
     shelf.expectMsg(InspireMe)
 
@@ -66,16 +60,17 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
     shelf.expectMsg(Skip)
   }
 
-  test("recover trigger by  not interacting with Twitter, but continue from last time asked afterwards") {
+  test("recover trigger by  not interacting with Twitter, but continue from last id asked afterwards") {
     curator ! Trigger
-    tweeter.expectMsg(FetchDirectMessages(MIN))
+    tweeter.expectMsg(FetchDirectMessages(0L))
+    curator ! GotDirectMessage(directMessage)
 
     recoverFromShutdown()
 
     tweeter.expectNoMsg()
 
     curator ! Trigger
-    tweeter.expectMsg(FetchDirectMessages(currentTime))
+    tweeter.expectMsg(FetchDirectMessages(lastId))
   }
 
   test("recover AddInspiration by replaying it to shelf") {
@@ -106,6 +101,6 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
   }
 
   private def createCurator(): ActorRef = {
-    system.actorOf(Props(new Curator(tweeter.ref, shelf.ref, clock)))
+    system.actorOf(Props(new Curator(tweeter.ref, shelf.ref)))
   }
 }
