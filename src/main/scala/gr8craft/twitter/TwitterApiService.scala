@@ -1,81 +1,63 @@
 package gr8craft.twitter
 
-import gr8craft.messages.{Done, Message}
 import org.slf4s.Logging
 import twitter4j._
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Try, Failure, Success}
 
-class TwitterApiService(twitter: AsyncTwitter) extends TwitterService with Logging {
+class TwitterApiService(twitter: Twitter) extends TwitterService with Logging {
+  private val DEFAULT_PAGING = 1
 
-  override def tweet(tweet: String): Future[Message] = {
-    val promise: Promise[Message] = handleTweetResponse
-
-    sendTweet(tweet)
-
-    promise.future
-  }
-
-  private def sendTweet(tweet: String): Unit = {
+  override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
     log.info(s"sending tweet to Twitter: $tweet")
-    twitter.updateStatus(tweet)
+
+    Future {
+      twitter.updateStatus(tweet.toString)
+    }.onComplete(completeTweeting(successAction, failureAction))
   }
 
-  private def handleTweetResponse: Promise[Message] = {
-    val promise = Promise[Message]()
+  def fetchDirectMessagesAfter(lastFetched: Option[Long], successAction: (List[DirectMessage]) => Unit) = {
+    log.info(s"retrieving" + logRetrievingMessagesFrom(lastFetched))
 
-    twitter.addListener(new TwitterAdapter() {
-      override def updatedStatus(status: Status) {
-        log.info(s"successfully tweeted $status.getText()")
-        promise.success(Done)
-      }
-
-      override def onException(twitterException: TwitterException, method: TwitterMethod): Unit = {
-        log.error(s"Error while tweeting: ${twitterException.getErrorMessage}", twitterException)
-        promise.failure(twitterException)
-      }
-    })
-
-    promise
-  }
-
-  override def getDirectMessagesAfter(lastFetched: Option[Long]): Future[Set[DirectMessage]] = {
-    val promise: Promise[Set[DirectMessage]] = handleDirectMessageResponse(lastFetched)
-
-    requestDirectMessages(lastFetched)
-
-    promise.future
-  }
-
-  private def requestDirectMessages(lastFetched: Option[Long]): Unit = {
-    log.info(s"reading direct Messages after id: $lastFetched")
     val paging = new Paging()
-    paging.setSinceId(lastFetched.getOrElse(0))
-    twitter.getDirectMessages()
+    paging.setSinceId(lastFetched.getOrElse(DEFAULT_PAGING))
+
+    Future {
+      twitter.getDirectMessages
+    }.onComplete(completeFetchingDirectMessages(successAction, lastFetched))
   }
 
-  private def handleDirectMessageResponse(lastFetched: Option[Long]): Promise[Set[DirectMessage]] = {
-    val promise = Promise[Set[DirectMessage]]()
+  private def completeTweeting(successAction: () => Unit, failureAction: () => Unit): (Try[Status]) => Unit = {
+    val completeTweeting: (Try[Status]) => Unit = {
+      case Success(tweetSend) =>
+        log.info(s"successfully tweeted $tweetSend.getText()")
+        successAction.apply()
+      case Failure(twitterException) =>
+        log.error(s"Error while tweeting: ${twitterException.getMessage}", twitterException)
+        failureAction.apply()
+    }
+    completeTweeting
+  }
 
-    twitter.addListener(new TwitterAdapter() {
-      override def gotDirectMessages(messages: ResponseList[twitter4j.DirectMessage]): Unit = {
-        log.info(s"successfully retrieved messages${lastFetched.map("after " + _).getOrElse("")}")
+  private def logRetrievingMessagesFrom(lastFetched: Option[Long]): String = {
+    s" direct messages ${lastFetched.map("after " + _).getOrElse("")}"
+  }
 
-        val directMessages = messages.asScala
-          .map(message =>
-            new DirectMessage(message.getSenderScreenName, message.getText, message.getId))
-          .toSet
+  private def completeFetchingDirectMessages(successAction: (List[DirectMessage]) => Unit, lastFetched: Option[Long]): (Try[ResponseList[twitter4j.DirectMessage]]) => Unit = {
+    case Success(messages) =>
+      log.info(s"successfully retrieved" + logRetrievingMessagesFrom(lastFetched))
+      successAction(convertMessages(messages))
+    case Failure(twitterException) =>
+      log.error(s"Error while fetching direct messages: ${twitterException.getMessage}", twitterException)
 
-        promise.success(directMessages)
-      }
+  }
 
-      override def onException(twitterException: TwitterException, method: TwitterMethod): Unit = {
-        log.error(s"Error while fetching direct messages: ${twitterException.getErrorMessage}", twitterException)
-        promise.failure(twitterException)
-      }
-    })
-
-    promise
+  private def convertMessages(messages: ResponseList[twitter4j.DirectMessage]): List[DirectMessage] = {
+    messages.asScala
+      .map(message => DirectMessage(message.getSenderScreenName, message.getText, message.getId))
+      .toList
   }
 }

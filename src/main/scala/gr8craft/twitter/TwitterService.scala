@@ -1,11 +1,7 @@
 package gr8craft.twitter
 
-import gr8craft.messages.Message
-
-import scala.concurrent.Future
-
 trait TwitterService {
-  def tweet(tweet: String): Future[Message]
+  def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit
 
-  def getDirectMessagesAfter(lastFetched: Option[Long]): Future[Set[DirectMessage]]
+  def fetchDirectMessagesAfter(lastFetched: Option[Long], successAction: (List[DirectMessage]) => Unit)
 }

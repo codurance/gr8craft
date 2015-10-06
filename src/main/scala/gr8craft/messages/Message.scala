@@ -1,7 +1,7 @@
 package gr8craft.messages
 
 import gr8craft.inspiration.Inspiration
-import gr8craft.twitter.DirectMessage
+import gr8craft.twitter.{Tweet, DirectMessage}
 
 sealed trait Message
 

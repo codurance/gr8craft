@@ -3,7 +3,7 @@ package gr8craft.featuresmocked
 import gr8craft.ApplicationFactory._
 import gr8craft.inspiration.Inspiration
 import gr8craft.messages.{Done, Message}
-import gr8craft.twitter.{DirectMessage, TwitterService}
+import gr8craft.twitter.{Tweet, DirectMessage, TwitterService}
 import gr8craft.{AkkaSteps, ApplicationRunner}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,22 +11,18 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
-  var directMessage: String = null
-  var sender: String = null
+
+  var directMessages: List[DirectMessage] = List()
   val twitterService = new TwitterService {
     var tweet: String = null
 
     def tweetSent: String = this.tweet
 
-    override def tweet(tweet: String): Future[Message] = {
-      Future {
-        this.tweet = tweet
-        Done
-      }
-    }
+    override def fetchDirectMessagesAfter(lastFetched: Option[Long], successAction: (List[DirectMessage]) => Unit): Unit = successAction.apply(directMessages)
 
-    override def getDirectMessagesAfter(lastFetched: Option[Long]): Future[Set[DirectMessage]] = Future {
-      Set(new DirectMessage(sender, directMessage, 42L))
+    override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
+      this.tweet = tweet.toString
+      successAction.apply()
     }
   }
 
@@ -48,20 +44,9 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
       twitterService.tweetSent.toString shouldBe expectedTweet
   }
 
-  Given( """^gr8craft receives a mention from "([^"]*)" with the recommendation "([^"]*)"$""") {
-    (contributor: String, recommendation: String) =>
-
-  }
-
-  Then( """^"([^"]*)" receives a DM from gr8craft saying "([^"]*)"$""") {
-    (recipient: String, message: String) =>
-
-  }
-
   Given( """^"([^"]*)" sends a DM to gr8craft with the text "([^"]*)"$""") {
-    (sender: String, directMessage: String) =>
+    (sender: String, messageText: String) =>
+      directMessages = directMessages :+ new DirectMessage(sender, messageText, 42L)
       application = createApplication(system, twitterService, tweetInterval = 1.second)
-      this.directMessage = directMessage
-      this.sender = sender
   }
 }

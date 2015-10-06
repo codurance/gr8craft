@@ -13,6 +13,7 @@ import scala.concurrent.Future.{failed, successful}
 
 @RunWith(classOf[JUnitRunner])
 class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with ScalaFutures {
+
   val topic: String = "topic"
   val location: String = "location"
   val contributor: String = "contributor"
@@ -28,13 +29,23 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 3L)
   val lastRequested = 42L
 
-  val twitterService = mock[TwitterService]
+  var twitterRequestSuccessful: Boolean = true
+  var directMessages: List[DirectMessage] = List()
+
+  val twitterService = new TwitterService {
+    override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
+      if (twitterRequestSuccessful) successAction.apply() else failureAction.apply()
+    }
+
+    override def fetchDirectMessagesAfter(lastFetched: Option[Long], successAction: (List[DirectMessage]) => Unit): Unit = {
+      successAction.apply(directMessages)
+    }
+  }
+
   val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
 
   test("forward tweets to Twitter") {
-    (twitterService.tweet _)
-      .expects(new Tweet(inspiration).toString)
-      .returns(successful(Done))
+    twitterRequestSuccessful = true
 
     tweeter ! GoAndTweet(inspiration)
 
@@ -42,8 +53,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("informs of unsuccessful tweets") {
-    (twitterService.tweet _).expects(new Tweet(inspiration).toString)
-      .returns(failed(new RuntimeException()))
+    twitterRequestSuccessful = false
 
     tweeter ! GoAndTweet(inspiration)
 
@@ -51,9 +61,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("don't accept direct messages that do not come from the moderator") {
-    (twitterService.getDirectMessagesAfter _)
-      .expects(Some(lastRequested))
-      .returns(successful(Set(foreignMessage)))
+    directMessages = List(foreignMessage)
 
     tweeter ! FetchDirectMessages(Some(lastRequested))
 
@@ -61,9 +69,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("fetch direct messages from moderator and forward them") {
-    (twitterService.getDirectMessagesAfter _)
-      .expects(Some(lastRequested))
-      .returns(successful(Set(directMessage, laterDirectMessage)))
+    directMessages = List(directMessage, laterDirectMessage)
 
     tweeter ! FetchDirectMessages(Some(lastRequested))
 

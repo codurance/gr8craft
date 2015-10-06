@@ -2,11 +2,11 @@ package gr8craft
 
 import com.typesafe.config.ConfigFactory
 import twitter4j.conf.ConfigurationBuilder
-import twitter4j.{AsyncTwitter, AsyncTwitterFactory}
+import twitter4j.{Twitter, TwitterFactory, AsyncTwitter, AsyncTwitterFactory}
 
 object TwitterFactoryWithConfiguration {
 
-  def createTwitter(twitterHandle: String = ""): AsyncTwitter = {
+  def createTwitter(twitterHandle: String = ""): Twitter = {
     val configuration = ConfigFactory.load().getConfig("twitter4j" + twitterHandle)
 
     val twitterAuthConfiguration = new ConfigurationBuilder()
@@ -17,7 +17,7 @@ object TwitterFactoryWithConfiguration {
       .setOAuthAccessTokenSecret(configuration.getString("accessTokenSecret"))
       .build()
 
-    new AsyncTwitterFactory(twitterAuthConfiguration).getInstance()
+    new TwitterFactory(twitterAuthConfiguration).getInstance()
   }
 
 }
