@@ -12,7 +12,7 @@ class TweetShould extends FunSuite with Matchers {
   }
 
   test("have a useful output when there is a contributor") {
-    val inspiration = new Inspiration("myTopic", "myLocation", Option.apply("@myContributor"))
+    val inspiration = new Inspiration("myTopic", "myLocation", Some("@myContributor"))
 
     new Tweet(inspiration).toString shouldBe "Your hourly recommended inspiration about myTopic: myLocation (via @myContributor)"
   }
