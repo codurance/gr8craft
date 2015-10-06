@@ -16,11 +16,7 @@ class Gr8craft(scheduler: ActorRef) {
 }
 
 object Gr8craft {
-  def inspirations: Set[Inspiration] = Set()
-
   def main(args: Array[String]) {
-    val application: Gr8craft = createApplication(initalInspirations = inspirations)
-
-    application.startTwitterBot()
+    createApplication().startTwitterBot()
   }
 }

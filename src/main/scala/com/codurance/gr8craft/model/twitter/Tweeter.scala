@@ -14,14 +14,14 @@ class Tweeter(twitterService: TwitterService) extends Actor {
       fetchDirectMessages(lastFetched)
   }
 
-  def tweet(inspiration: Inspiration): Unit = {
+  private def tweet(inspiration: Inspiration): Unit = {
     val actorToInform = sender()
-    twitterService.tweet(new Tweet(inspiration), { () => actorToInform ! SuccessfullyTweeted(inspiration) }, { () => actorToInform ! FailedToTweet(inspiration) })
+    twitterService.tweet(new Tweet(inspiration), () => actorToInform ! SuccessfullyTweeted(inspiration), () => actorToInform ! FailedToTweet(inspiration))
   }
 
-  def fetchDirectMessages(lastFetched: Option[DirectMessageId]): Unit = {
+  private def fetchDirectMessages(lastFetched: Option[DirectMessageId]): Unit = {
     val actorToInform = sender()
-    twitterService.fetchDirectMessagesAfter(lastFetched, { (messages) => addInspirations(messages, actorToInform) })
+    twitterService.fetchDirectMessagesAfter(lastFetched, messages => addInspirations(messages, actorToInform))
   }
 
   def addInspirations(messages: List[DirectMessage], actorToInform: ActorRef): Unit = {
