@@ -4,9 +4,9 @@ import org.scalatest.{FunSuite, Matchers}
 
 class SuggestionShould extends FunSuite with Matchers {
   test("parse a valid Suggestion to an inspiration") {
-    val parsedInspiration = new Suggestion("inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor").parse
+    val parsedInspiration = new Suggestion("inspiration: Technical Debt | location: https://t.co/p0l82zzEtw | contributor: @gr8contributor").parse
 
-    parsedInspiration.get shouldEqual new Inspiration("DDD", "http://t.co/lqJDZlGcJE", Some("@gr8contributor"))
+    parsedInspiration.get shouldEqual new Inspiration("Technical Debt", "https://t.co/p0l82zzEtw", Some("@gr8contributor"))
   }
 
   test("yield no Inspiration if not matched") {
