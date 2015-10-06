@@ -5,28 +5,36 @@ import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip
 
 class Shelf(inspirations: Set[Inspiration]) extends Actor {
 
-  import context._
-
+  private var usedInspirations: Set[Inspiration] = Set.empty
+  private var newInspirations: Set[Inspiration] = inspirations
+  
   override def receive: Receive = {
-    receive(inspirations, 0)
+    case InspireMe =>
+      inspireMe()
+    case Skip =>
+      takeNextInspirationFromShelf()
+    case AddInspiration(inspiration: Inspiration) =>
+      newInspirations = newInspirations + inspiration
   }
 
-  def receive(inspirations: Set[Inspiration], index: Integer): Receive = {
-    case InspireMe => inspireMe(inspirations, index)
-    case Skip => changeTo(inspirations, index + 1)
-    case AddInspiration(inspiration: Inspiration) => changeTo(inspirations + inspiration, index)
-  }
+  private def inspireMe(): Unit = {
+    val nextInspiration = takeNextInspirationFromShelf()
 
-  private def inspireMe(inspirations: Set[Inspiration], index: Integer): Unit = {
-    if (inspirations.size <= index)
+    if (nextInspiration.isEmpty)
       return
 
-    sender() ! Inspire(inspirations.toList(index))
-    changeTo(inspirations, index + 1)
+    sender() ! Inspire(nextInspiration.get)
   }
 
-  private def changeTo(inspirations: Set[Inspiration], index: Integer): Unit = {
-    become(receive(inspirations, index))
+  private def takeNextInspirationFromShelf(): Option[Inspiration] = {
+    val nextInspiration = newInspirations.headOption
+
+    if (nextInspiration.isDefined) {
+      newInspirations = newInspirations.tail
+      usedInspirations = usedInspirations + nextInspiration.get
+    }
+
+    nextInspiration
   }
 
 }
