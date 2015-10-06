@@ -1,9 +1,7 @@
 package gr8craft.twitter
 
-import java.time.LocalDateTime
-
 import akka.actor.{Actor, ActorRef}
-import gr8craft.inspiration.{Inspiration, Submission}
+import gr8craft.inspiration.Inspiration
 import gr8craft.messages._
 
 import scala.collection.Set
@@ -14,8 +12,10 @@ class Tweeter(twitterService: TwitterService) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"
 
   override def receive: Receive = {
-    case GoAndTweet(inspiration: Inspiration) => tweet(inspiration)
-    case FetchDirectMessages(lastFetched: LocalDateTime) => fetchDirectMessages(lastFetched)
+    case GoAndTweet(inspiration) =>
+      tweet(inspiration)
+    case FetchDirectMessages(lastFetched) =>
+      fetchDirectMessages(lastFetched)
   }
 
   def tweet(inspiration: Inspiration): Unit = {
@@ -23,28 +23,27 @@ class Tweeter(twitterService: TwitterService) extends Actor {
     val future = twitterService.tweet(new Tweet(inspiration).toString)
 
     future.onComplete {
-      case Success(message) => actorToInform ! SuccessfullyTweeted(inspiration)
-      case Failure(throwable) => actorToInform ! FailedToTweet(inspiration)
+      case Success(message) =>
+        actorToInform ! SuccessfullyTweeted(inspiration)
+      case Failure(_) =>
+        actorToInform ! FailedToTweet(inspiration)
     }
   }
 
-  def fetchDirectMessages(lastFetched: LocalDateTime): Unit = {
+  def fetchDirectMessages(lastFetched: Option[Long]): Unit = {
     val actorToInform = sender()
-    val future = twitterService.getDirectMessagesFrom(lastFetched)
+    val future = twitterService.getDirectMessagesAfter(lastFetched)
 
     future.onComplete {
-      case Success(messages) => addInspirations(messages, actorToInform)
-      case Failure(throwable) =>
+      case Success(messages) =>
+        addInspirations(messages, actorToInform)
+      case _ =>
     }
   }
 
   def addInspirations(messages: Set[DirectMessage], actorToInform: ActorRef): Unit = {
-    messages.filter(message =>
-      message.sender == APPROVED_MODERATOR)
-      .map(message =>
-        new Submission(message.directMessage).parse)
-      .foreach(option =>
-        option.foreach(inspiration =>
-          actorToInform ! AddInspiration(inspiration)))
+    messages
+      .filter(message => message.sender == APPROVED_MODERATOR)
+      .foreach(message => actorToInform ! GotDirectMessage(message))
   }
 }

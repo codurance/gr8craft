@@ -31,12 +31,12 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
   test("receive a trigger and ask the tweeter for new DMs since last asked") {
     curator ! Trigger
 
-    tweeter.expectMsg(FetchDirectMessages(0L))
+    tweeter.expectMsg(FetchDirectMessages(None))
 
     curator ! GotDirectMessage(directMessage)
     curator ! Trigger
 
-    tweeter.expectMsg(FetchDirectMessages(lastId))
+    tweeter.expectMsg(FetchDirectMessages(Some(lastId)))
   }
 
   test("receive a new inspiration and use it") {
@@ -62,7 +62,7 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
 
   test("recover trigger by  not interacting with Twitter, but continue from last id asked afterwards") {
     curator ! Trigger
-    tweeter.expectMsg(FetchDirectMessages(0L))
+    tweeter.expectMsg(FetchDirectMessages(None))
     curator ! GotDirectMessage(directMessage)
 
     recoverFromShutdown()
@@ -70,7 +70,7 @@ class CuratorShould extends AkkaTest("CuratorShould") with MockFactory {
     tweeter.expectNoMsg()
 
     curator ! Trigger
-    tweeter.expectMsg(FetchDirectMessages(lastId))
+    tweeter.expectMsg(FetchDirectMessages(Some(lastId)))
   }
 
   test("recover AddInspiration by replaying it to shelf") {

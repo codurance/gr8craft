@@ -22,7 +22,7 @@ class ScheduledExecutorShould extends AkkaTest("ScheduledExecutorShould") with D
     scheduler ! Stop
   }
 
-  test("send trigger message to actor to be scheduled") {
+  test("send trigger text to actor to be scheduled") {
     scheduler ! Start
 
     ensureTriggerMessageWasSent()

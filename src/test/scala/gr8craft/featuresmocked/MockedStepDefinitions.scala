@@ -1,11 +1,9 @@
 package gr8craft.featuresmocked
 
-import java.time.LocalDateTime
-
 import gr8craft.ApplicationFactory._
 import gr8craft.inspiration.Inspiration
-import gr8craft.messages.{DirectMessage, Done, Message}
-import gr8craft.twitter.{Tweet, TwitterService}
+import gr8craft.messages.{Done, Message}
+import gr8craft.twitter.{DirectMessage, TwitterService}
 import gr8craft.{AkkaSteps, ApplicationRunner}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,10 +25,8 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
       }
     }
 
-    override def getDirectMessagesFrom(startingTime: LocalDateTime): Future[Set[DirectMessage]] = {
-      Future {
-        Set(new DirectMessage(sender, directMessage))
-      }
+    override def getDirectMessagesAfter(lastFetched: Option[Long]): Future[Set[DirectMessage]] = Future {
+      Set(new DirectMessage(sender, directMessage, 42L))
     }
   }
 

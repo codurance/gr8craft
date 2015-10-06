@@ -1,7 +1,5 @@
 package gr8craft.twitter
 
-import java.time.LocalDateTime
-
 import akka.actor.Props
 import gr8craft.AkkaTest
 import gr8craft.inspiration.Inspiration
@@ -25,17 +23,17 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
 
   val inspiration = new Inspiration(topic, location)
 
-  val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
-  val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor)
-  val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor)
-  val lastRequested = LocalDateTime.now
+  val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 1L)
+  val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: " + anotherTopic + " | location: " + anotherLocation + " | contributor: " + anotherContributor, 2L)
+  val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: " + topic + " | location: " + location + " | contributor: " + contributor, 3L)
+  val lastRequested = 42L
 
   val twitterService = mock[TwitterService]
   val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
 
   test("forward tweets to Twitter") {
     (twitterService.tweet _)
-      .expects(inspiration.toString)
+      .expects(new Tweet(inspiration).toString)
       .returns(successful(Done))
 
     tweeter ! GoAndTweet(inspiration)
@@ -44,7 +42,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("informs of unsuccessful tweets") {
-    (twitterService.tweet _).expects(inspiration.toString)
+    (twitterService.tweet _).expects(new Tweet(inspiration).toString)
       .returns(failed(new RuntimeException()))
 
     tweeter ! GoAndTweet(inspiration)
@@ -53,23 +51,23 @@ class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with Scal
   }
 
   test("don't accept direct messages that do not come from the moderator") {
-    (twitterService.getDirectMessagesFrom _)
-      .expects(lastRequested)
+    (twitterService.getDirectMessagesAfter _)
+      .expects(Some(lastRequested))
       .returns(successful(Set(foreignMessage)))
 
-    tweeter ! FetchDirectMessages(lastRequested)
+    tweeter ! FetchDirectMessages(Some(lastRequested))
 
     expectNoMsg()
   }
 
-  test("fetch direct messages from moderator and recommend authors from it") {
-    (twitterService.getDirectMessagesFrom _)
-      .expects(lastRequested)
+  test("fetch direct messages from moderator and forward them") {
+    (twitterService.getDirectMessagesAfter _)
+      .expects(Some(lastRequested))
       .returns(successful(Set(directMessage, laterDirectMessage)))
 
-    tweeter ! FetchDirectMessages(lastRequested)
+    tweeter ! FetchDirectMessages(Some(lastRequested))
 
-    expectMsg(AddInspiration(new Inspiration(topic, location, Option.apply(contributor))))
-    expectMsg(AddInspiration(new Inspiration(anotherTopic, anotherLocation, Option.apply(anotherContributor))))
+    expectMsg(GotDirectMessage(directMessage))
+    expectMsg(GotDirectMessage(laterDirectMessage))
   }
 }
