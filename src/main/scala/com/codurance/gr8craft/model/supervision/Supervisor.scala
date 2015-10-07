@@ -1,8 +1,8 @@
 package com.codurance.gr8craft.model.supervision
 
 import java.util.concurrent.Executors.newSingleThreadScheduledExecutor
-import java.util.concurrent.{ScheduledFuture, ScheduledExecutorService}
 import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture}
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages.{IsTerminated, Start, Stop, Trigger}

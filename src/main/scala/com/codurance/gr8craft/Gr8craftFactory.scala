@@ -5,8 +5,8 @@ import com.codurance.gr8craft.infrastructure.TwitterApiService
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
 import com.codurance.gr8craft.model.inspiration.{Archivist, Inspiration, Shelf}
 import com.codurance.gr8craft.model.publishing.{Publisher, TwitterService}
+import com.codurance.gr8craft.model.research.{Journalist, Researcher}
 import com.codurance.gr8craft.model.supervision.{Editor, Supervisor}
-import com.codurance.gr8craft.research.{Journalist, Researcher}
 
 import scala.concurrent.duration._
 
@@ -30,7 +30,7 @@ object Gr8craftFactory {
     def createActor(actor: Actor): ActorRef = {
       system.actorOf(Props(actor))
     }
-    
+
     val archivist = createActor(new Archivist(new Shelf(initialInspirations)))
     new Gr8craft(createSupervisor(system, twitterService, tweetInterval, archivist))
   }

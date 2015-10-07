@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.research
+package com.codurance.gr8craft.model.research
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
