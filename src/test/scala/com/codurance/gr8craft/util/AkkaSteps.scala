@@ -10,7 +10,7 @@ import org.scalatest.concurrent.Eventually
 class AkkaSteps(systemName: String) extends TestKit(ActorSystem(systemName)) with ScalaDsl with EN with Matchers with Eventually {
   private val numberOfScenarios = 2
 
-  private var testCount = 0;
+  private var testCount = 0
 
   After() { _ =>
     testCount = testCount + 1
