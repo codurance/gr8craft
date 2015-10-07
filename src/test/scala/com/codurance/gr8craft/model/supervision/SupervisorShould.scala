@@ -32,7 +32,7 @@ class SupervisorShould extends AkkaTest("SupervisorShould") with MockFactory {
     shelf.expectMsg(InspireMe)
   }
 
-  test("receive a trigger and ask the tweeter for new DMs since last asked") {
+  test("receive a trigger and ask the publisher for new DMs since last asked") {
     curator ! Trigger
 
     tweeter.expectMsg(FetchDirectMessages(None))

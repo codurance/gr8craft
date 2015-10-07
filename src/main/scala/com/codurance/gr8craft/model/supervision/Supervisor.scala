@@ -6,7 +6,7 @@ import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
 import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
-class Supervisor(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
+class Supervisor(publisher: ActorRef, shelf: ActorRef) extends PersistentActor {
   private var lastFetched: Option[DirectMessageId] = None
 
   override def persistenceId: String = "Supervisor"
@@ -44,13 +44,13 @@ class Supervisor(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
   private def triggerRegularActions(): Unit = {
     persist(Triggered(lastFetched))(_ => {
       shelf ! InspireMe
-      tweeter ! FetchDirectMessages(lastFetched)
+      publisher ! FetchDirectMessages(lastFetched)
     })
   }
 
   private def tweet(inspiration: Inspiration): Unit = {
     persist(Tweeted(inspiration))(_ =>
-      tweeter ! GoAndTweet(inspiration)
+      publisher ! GoAndTweet(inspiration)
     )
   }
 }
