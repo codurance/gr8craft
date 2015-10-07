@@ -6,13 +6,13 @@ import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip
 import com.codurance.gr8craft.util.AkkaTest
 
 class ArchivistShould extends AkkaTest("ArchivistShould") {
-  private val shelf = TestActorRef(Props(new Archivist(Set.empty)))
+  private val archivist = TestActorRef(Props(new Archivist(Set.empty)))
   private val inspiration = new Inspiration("topic", "location")
 
   test("return inspiration on the shelf") {
-    shelf ! AddInspiration(inspiration)
+    archivist ! AddInspiration(inspiration)
 
-    shelf ! InspireMe
+    archivist ! InspireMe
 
     expectMsg(Inspire(inspiration))
   }
@@ -20,29 +20,29 @@ class ArchivistShould extends AkkaTest("ArchivistShould") {
   test("add new inspiration to the end of the shelf") {
     val laterInspiration = new Inspiration("another topic", "another location")
 
-    shelf ! AddInspiration(inspiration)
-    shelf ! AddInspiration(laterInspiration)
+    archivist ! AddInspiration(inspiration)
+    archivist ! AddInspiration(laterInspiration)
 
-    shelf ! InspireMe
+    archivist ! InspireMe
     expectMsg(Inspire(inspiration))
-    shelf ! InspireMe
+    archivist ! InspireMe
     expectMsg(Inspire(laterInspiration))
   }
 
   test("skip inspiration if instructed") {
     val laterInspiration = new Inspiration("another topic", "another location")
 
-    shelf ! AddInspiration(inspiration)
-    shelf ! AddInspiration(laterInspiration)
+    archivist ! AddInspiration(inspiration)
+    archivist ! AddInspiration(laterInspiration)
 
-    shelf ! Skip
+    archivist ! Skip
 
-    shelf ! InspireMe
+    archivist ! InspireMe
     expectMsg(Inspire(laterInspiration))
   }
 
   test("give no inspiration if it runs out of inspiration") {
-    shelf ! InspireMe
+    archivist ! InspireMe
 
     expectNoMsg()
   }
@@ -50,12 +50,12 @@ class ArchivistShould extends AkkaTest("ArchivistShould") {
   test("not allow the same inspiration twice in the shelf at one time") {
     val laterInspiration = new Inspiration("topic", "location")
 
-    shelf ! AddInspiration(inspiration)
-    shelf ! AddInspiration(laterInspiration)
+    archivist ! AddInspiration(inspiration)
+    archivist ! AddInspiration(laterInspiration)
 
-    shelf ! InspireMe
+    archivist ! InspireMe
     expectMsg(Inspire(inspiration))
-    shelf ! InspireMe
+    archivist ! InspireMe
     expectNoMsg()
   }
 }
