@@ -12,11 +12,11 @@ import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
   private val gr8craftTwitter = createTwitter()
-  private var initialInspirations: Set[Inspiration] = null
+  private var initialInspirations: Set[Inspiration] = Set()
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
-      initialInspirations = Set(new Inspiration(topic, location))
+      initialInspirations = Set(Inspiration(topic, location))
   }
 
   When( """^the hour is reached$""") {
