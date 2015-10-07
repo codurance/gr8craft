@@ -28,7 +28,7 @@ class EditorShould extends AkkaTest("EditorShould") with MockFactory {
   test("receive a new inspiration and use it") {
     editor ! Inspire(inspiration)
 
-    publisher.expectMsg(GoAndTweet(inspiration))
+    publisher.expectMsg(Publish(inspiration))
     archivist.expectNoMsg()
   }
 
@@ -44,7 +44,7 @@ class EditorShould extends AkkaTest("EditorShould") with MockFactory {
 
   test("recover Inspire by doing nothing") {
     editor ! Inspire(inspiration)
-    publisher.expectMsg(GoAndTweet(inspiration))
+    publisher.expectMsg(Publish(inspiration))
 
     recoverFromShutdown()
 

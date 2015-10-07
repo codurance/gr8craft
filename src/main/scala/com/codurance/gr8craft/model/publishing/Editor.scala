@@ -12,7 +12,7 @@ class Editor(publisher: ActorRef, archivist: ActorRef) extends PersistentActor {
     case Trigger =>
       triggerArchivist()
     case Inspire(inspiration) =>
-      tweet(inspiration)
+      publish(inspiration)
   }
 
   override def receiveRecover: Receive = {
@@ -20,16 +20,15 @@ class Editor(publisher: ActorRef, archivist: ActorRef) extends PersistentActor {
       archivist ! Skip
   }
 
-
   private def triggerArchivist(): Unit = {
     persist(TriggeredArchivist)(_ => {
       archivist ! InspireMe
     })
   }
 
-  private def tweet(inspiration: Inspiration): Unit = {
-    persist(Tweeted(inspiration))(_ =>
-      publisher ! GoAndTweet(inspiration)
+  private def publish(inspiration: Inspiration): Unit = {
+    persist(Published(inspiration))(_ =>
+      publisher ! Publish(inspiration)
     )
   }
 }

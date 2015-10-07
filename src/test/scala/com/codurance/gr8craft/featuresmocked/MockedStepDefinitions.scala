@@ -14,9 +14,8 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
   private val tweetSender = new TweetSender {
     var tweet: String = null
 
-    override def tweet(tweet: Tweet, successAction: () => Unit): Unit = {
+    override def tweet(tweet: Tweet): Unit = {
       this.tweet = tweet.toString
-      successAction.apply()
     }
   }
 

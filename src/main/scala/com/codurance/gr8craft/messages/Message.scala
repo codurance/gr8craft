@@ -17,13 +17,12 @@ case object InspireMe extends Message
 
 case object Skip extends Message
 
-case class SuccessfullyTweeted(inspiration: Inspiration) extends Message
 
 case class AddInspiration(inspiration: Inspiration) extends Message
 
 case class Inspire(inspiration: Inspiration) extends Message
 
-case class GoAndTweet(tweet: Inspiration) extends Message
+case class Publish(tweet: Inspiration) extends Message
 
 case class AddDirectMessage(directMessage: DirectMessage) extends Message
 

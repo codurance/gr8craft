@@ -9,6 +9,6 @@ case class TriggeredResearcher(lastFetched: Option[DirectMessageId]) extends Eve
 
 case class TriggeredArchivist() extends Event
 
-case class Tweeted(inspiration: Inspiration) extends Event
+case class Published(inspiration: Inspiration) extends Event
 
 case class GotDirectMessage(message: DirectMessage) extends Event
