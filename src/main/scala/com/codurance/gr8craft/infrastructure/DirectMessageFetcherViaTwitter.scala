@@ -15,12 +15,15 @@ class DirectMessageFetcherViaTwitter(twitter: Twitter) extends DirectMessageFetc
   override def fetchAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit) = {
     log.info(s"retrieving" + logRetrievingMessagesFrom(lastFetched))
 
+    Future {
+      twitter.getDirectMessages(createPaging(lastFetched))
+    }.onComplete(completeFetchingDirectMessages(successAction, lastFetched))
+  }
+
+  private def createPaging(lastFetched: Option[DirectMessageId]): Paging = {
     val paging = new Paging()
     paging.setSinceId(lastFetched.getOrElse(DEFAULT_PAGING).id)
-
-    Future {
-      twitter.getDirectMessages
-    }.onComplete(completeFetchingDirectMessages(successAction, lastFetched))
+    paging
   }
 
   private def logRetrievingMessagesFrom(lastFetched: Option[DirectMessageId]): String = {
@@ -33,7 +36,6 @@ class DirectMessageFetcherViaTwitter(twitter: Twitter) extends DirectMessageFetc
       successAction(convertMessages(messages))
     case Failure(twitterException) =>
       log.error(s"Error while fetching direct messages: ${twitterException.getMessage}", twitterException)
-
   }
 
   private def convertMessages(messages: ResponseList[twitter4j.DirectMessage]): List[DirectMessage] = {
