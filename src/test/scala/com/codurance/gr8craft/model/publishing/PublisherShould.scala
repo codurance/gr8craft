@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.twitter
+package com.codurance.gr8craft.model.publishing
 
 import akka.actor.Props
 import com.codurance.gr8craft.messages._
@@ -10,7 +10,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
+class PublisherShould extends AkkaTest("PublisherShould") with ScalaFutures {
 
   private val topic: String = "topic"
   private val location: String = "location"
@@ -40,12 +40,12 @@ class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
     }
   }
 
-  private val tweeter = system.actorOf(Props(new Tweeter(twitterService)))
+  private val publisher = system.actorOf(Props(new Publisher(twitterService)))
 
   test("forward tweets to Twitter") {
     twitterRequestSuccessful = true
 
-    tweeter ! GoAndTweet(inspiration)
+    publisher ! GoAndTweet(inspiration)
 
     expectMsg(SuccessfullyTweeted(inspiration))
   }
@@ -53,7 +53,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
   test("informs of unsuccessful tweets") {
     twitterRequestSuccessful = false
 
-    tweeter ! GoAndTweet(inspiration)
+    publisher ! GoAndTweet(inspiration)
 
     expectMsg(FailedToTweet(inspiration))
   }
@@ -61,7 +61,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
   test("don't accept direct messages that do not come from the moderator") {
     directMessages = List(foreignMessage)
 
-    tweeter ! FetchDirectMessages(Some(lastRequested))
+    publisher ! FetchDirectMessages(Some(lastRequested))
 
     expectNoMsg()
   }
@@ -69,7 +69,7 @@ class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
   test("fetch direct messages from moderator and forward them") {
     directMessages = List(directMessage, laterDirectMessage)
 
-    tweeter ! FetchDirectMessages(Some(lastRequested))
+    publisher ! FetchDirectMessages(Some(lastRequested))
 
     expectMsg(AddDirectMessage(directMessage))
     expectMsg(AddDirectMessage(laterDirectMessage))

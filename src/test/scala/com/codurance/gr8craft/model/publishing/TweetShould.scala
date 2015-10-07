@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.twitter
+package com.codurance.gr8craft.model.publishing
 
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import org.scalatest.{FunSuite, Matchers}

@@ -2,7 +2,7 @@ package com.codurance.gr8craft.featuresmocked
 
 import com.codurance.gr8craft.Gr8craftFactory._
 import com.codurance.gr8craft.model.inspiration.Inspiration
-import com.codurance.gr8craft.model.twitter.{DirectMessage, DirectMessageId, Tweet, TwitterService}
+import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId, Tweet, TwitterService}
 import com.codurance.gr8craft.util.AkkaSteps
 
 import scala.concurrent.duration._

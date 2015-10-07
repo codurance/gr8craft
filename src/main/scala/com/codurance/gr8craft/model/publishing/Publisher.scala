@@ -1,10 +1,10 @@
-package com.codurance.gr8craft.model.twitter
+package com.codurance.gr8craft.model.publishing
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.Inspiration
 
-class Tweeter(twitterService: TwitterService) extends Actor {
+class Publisher(twitterService: TwitterService) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"
 
   override def receive: Receive = {

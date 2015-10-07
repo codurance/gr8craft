@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
-import com.codurance.gr8craft.model.twitter.{DirectMessage, DirectMessageId}
+import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 import com.codurance.gr8craft.util.AkkaTest
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory

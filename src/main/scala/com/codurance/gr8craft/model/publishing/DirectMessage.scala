@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.twitter
+package com.codurance.gr8craft.model.publishing
 
 case class DirectMessageId(id: Long)
 

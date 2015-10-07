@@ -1,7 +1,7 @@
 package com.codurance.gr8craft.messages
 
 import com.codurance.gr8craft.model.inspiration.Inspiration
-import com.codurance.gr8craft.model.twitter.{DirectMessage, DirectMessageId}
+import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
 sealed trait Event
 
