@@ -5,7 +5,9 @@ import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
 sealed trait Event
 
-case class Triggered(lastFetched: Option[DirectMessageId]) extends Event
+case class TriggeredResearcher(lastFetched: Option[DirectMessageId]) extends Event
+
+case class TriggeredArchivist() extends Event
 
 case class Tweeted(inspiration: Inspiration) extends Event
 

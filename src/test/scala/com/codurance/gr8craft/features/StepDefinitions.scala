@@ -14,7 +14,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   private var initialInspirations: Set[Inspiration] = Set()
   private val gr8craftTwitter = createTwitter()
 
-  Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
+  Given( """^the next inspiration on the archivist about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
       initialInspirations = Set(Inspiration(topic, location))
   }

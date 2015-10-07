@@ -9,7 +9,7 @@ class ShelfShould extends FunSuite with Matchers {
 
   private val shelf = new Shelf()
 
-  test("return nothing if the shelf is empty") {
+  test("return nothing if the archivist is empty") {
     shelf.next() shouldBe None
   }
 
@@ -19,7 +19,7 @@ class ShelfShould extends FunSuite with Matchers {
     shelf.next() shouldBe Some(inspiration)
   }
 
-  test("add new inspirations at the end of the shelf and return each only once") {
+  test("add new inspirations at the end of the archivist and return each only once") {
     shelf.addInspiration(inspiration)
     shelf.addInspiration(laterInspiration)
 
@@ -27,7 +27,7 @@ class ShelfShould extends FunSuite with Matchers {
     shelf.next() shouldBe Some(laterInspiration)
   }
 
-  test("not allow the same inspiration on the shelf at the same time") {
+  test("not allow the same inspiration on the archivist at the same time") {
     val sameInspiration = Inspiration("topic", "location")
 
     shelf.addInspiration(inspiration)

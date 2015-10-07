@@ -3,9 +3,9 @@ package com.codurance.gr8craft.research
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
+import com.codurance.gr8craft.model.inspiration.Suggestion
 import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
-import com.codurance.gr8craft.model.supervision.Supervisor
+import com.codurance.gr8craft.model.supervision.Editor
 import com.codurance.gr8craft.util.AkkaTest
 import org.junit.runner.RunWith
 import org.scalamock.scalatest.MockFactory
@@ -34,15 +34,17 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
     journalist ! Trigger
 
     researcher.expectMsg(FetchDirectMessages(Some(lastId)))
+    archivist.expectNoMsg()
   }
 
   test("receive a new inspiration for the archivist and forward it") {
     journalist ! AddDirectMessage(directMessage)
 
     expectInspirationAddedFrom(textOfDirectMessage)
+    researcher.expectNoMsg()
   }
 
-  test("recover trigger by not interacting with Twitter, but continue from last id asked afterwards") {
+  test("recover trigger by continuing from last id asked afterwards") {
     journalist ! Trigger
     researcher.expectMsg(FetchDirectMessages(None))
     journalist ! AddDirectMessage(directMessage)
@@ -53,6 +55,7 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
 
     journalist ! Trigger
     researcher.expectMsg(FetchDirectMessages(Some(lastId)))
+    archivist.expectNoMsg()
   }
 
   test("recover getting DirectMessages") {
@@ -65,6 +68,7 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
 
     expectInspirationAddedFrom(textOfDirectMessage)
     expectInspirationAddedFrom(textOfLaterDirectMessage)
+    researcher.expectNoMsg()
   }
 
   private def recoverFromShutdown(): Unit = {
@@ -73,7 +77,7 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
   }
 
   private def createJournalist(): ActorRef = {
-    system.actorOf(Props(new Supervisor(researcher.ref, archivist.ref)))
+    system.actorOf(Props(new Journalist(researcher.ref, archivist.ref)))
   }
 
   private def expectInspirationAddedFrom(text: String): AddInspiration = {

@@ -2,8 +2,7 @@ package com.codurance.gr8craft.research
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.inspiration.Inspiration
-import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId, Tweet, TwitterService}
+import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId, TwitterService}
 
 class Researcher(twitterService: TwitterService) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"

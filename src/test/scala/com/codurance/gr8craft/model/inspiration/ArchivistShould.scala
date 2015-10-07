@@ -11,7 +11,7 @@ class ArchivistShould extends AkkaTest("ArchivistShould") with MockFactory {
   private val archivist = TestActorRef(Props(new Archivist(shelf)))
   private val inspiration = new Inspiration("topic", "location")
 
-  test("add new inspiration to the shelf") {
+  test("add new inspiration to the archivist") {
     (shelf.addInspiration _).expects(inspiration)
 
     archivist ! AddInspiration(inspiration)
@@ -19,7 +19,7 @@ class ArchivistShould extends AkkaTest("ArchivistShould") with MockFactory {
     expectNoMsg()
   }
 
-  test("get inspiration from the shelf") {
+  test("get inspiration from the archivist") {
     (shelf.next _).expects().returns(Some(inspiration))
 
     archivist ! InspireMe
@@ -27,7 +27,7 @@ class ArchivistShould extends AkkaTest("ArchivistShould") with MockFactory {
     expectMsg(Inspire(inspiration))
   }
 
-  test("skip inspiration on shelf") {
+  test("skip inspiration on archivist") {
     (shelf.next _).expects()
 
     archivist ! Skip
@@ -35,7 +35,7 @@ class ArchivistShould extends AkkaTest("ArchivistShould") with MockFactory {
     expectNoMsg()
   }
 
-  test("give no inspiration if shelf has none") {
+  test("give no inspiration if archivist has none") {
     (shelf.next _).expects().returns(None)
 
     archivist ! InspireMe

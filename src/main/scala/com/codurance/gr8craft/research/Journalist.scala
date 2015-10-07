@@ -6,17 +6,10 @@ import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.Suggestion
 import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
-class Journalist(researcher: ActorRef, shelf: ActorRef) extends PersistentActor {
+class Journalist(researcher: ActorRef, archivist: ActorRef) extends PersistentActor {
   private var lastFetched: Option[DirectMessageId] = None
 
   override def persistenceId: String = "Journalist"
-
-  override def receiveRecover: Receive = {
-    case Triggered(id) =>
-      this.lastFetched = id
-    case GotDirectMessage(directMessage) =>
-      addInspirationFromDirectMessage(directMessage)
-  }
 
   override def receiveCommand: Receive = {
     case Trigger =>
@@ -25,8 +18,15 @@ class Journalist(researcher: ActorRef, shelf: ActorRef) extends PersistentActor 
       gotDirectMessage(directMessage)
   }
 
+  override def receiveRecover: Receive = {
+    case TriggeredResearcher(id) =>
+      this.lastFetched = id
+    case GotDirectMessage(directMessage) =>
+      addInspirationFromDirectMessage(directMessage)
+  }
+
   private def triggerFetchingDirectMessages(): Unit = {
-    persist(Triggered(lastFetched))(_ => {
+    persist(TriggeredResearcher(lastFetched))(_ => {
       researcher ! FetchDirectMessages(lastFetched)
     })
   }
@@ -40,6 +40,6 @@ class Journalist(researcher: ActorRef, shelf: ActorRef) extends PersistentActor 
   private def addInspirationFromDirectMessage(directMessage: DirectMessage): Unit = {
     lastFetched = Some(directMessage.id)
     new Suggestion(directMessage.text).parse
-      .foreach(inspiration => shelf ! AddInspiration(inspiration))
+      .foreach(inspiration => archivist ! AddInspiration(inspiration))
   }
 }
