@@ -33,7 +33,6 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
     journalist ! Trigger
 
     researcher.expectMsg(FetchDirectMessages(Some(lastId)))
-    archivist.expectNoMsg()
   }
 
   test("receive a new inspiration for the archivist and forward it") {
@@ -54,7 +53,6 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
 
     journalist ! Trigger
     researcher.expectMsg(FetchDirectMessages(Some(lastId)))
-    archivist.expectNoMsg()
   }
 
   test("recover getting DirectMessages") {
