@@ -6,5 +6,5 @@ import org.junit.runner.RunWith
 
 @RunWith(classOf[Cucumber])
 @CucumberOptions(glue = Array("com.codurance.gr8craft.features"), tags = Array("~@work-in-progress"))
-class CucumberFeatures {
+class IntegrativeFeatureTests {
 }
