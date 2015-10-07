@@ -1,6 +1,6 @@
 package com.codurance.gr8craft
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor._
 import com.codurance.gr8craft.infrastructure.TwitterApiService
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
 import com.codurance.gr8craft.model.inspiration.{Archivist, Inspiration, Shelf}
@@ -14,24 +14,20 @@ object Gr8craftFactory {
   def createApplication(system: ActorSystem = ActorSystem("Gr8craftSystem"), twitterService: TwitterService = new TwitterApiService(createTwitter()), initialInspirations: Set[Inspiration] = Set.empty, tweetInterval: Duration = 1.hour): Gr8craft = {
 
     def createSupervisor(system: ActorSystem, twitterService: TwitterService, tweetInterval: Duration, archivist: ActorRef): ActorRef = {
-      createActor(new Supervisor(tweetInterval, List(createEditor(archivist), createJournalist(archivist))))
+      system.actorOf(Props(new Supervisor(tweetInterval, List(createEditor(archivist), createJournalist(archivist)))))
     }
 
     def createJournalist(archivist: ActorRef): ActorRef = {
-      val researcher = createActor(new Researcher(twitterService))
-      createActor(new Journalist(researcher, archivist))
+      val researcher = system.actorOf(Props(new Researcher(twitterService)))
+      system.actorOf(Props(new Journalist(researcher, archivist)))
     }
 
     def createEditor(archivist: ActorRef): ActorRef = {
-      val publisher = createActor(new Publisher(twitterService))
-      createActor(new Editor(publisher, archivist))
+      val publisher = system.actorOf(Props(new Publisher(twitterService)))
+      system.actorOf(Props(new Editor(publisher, archivist)))
     }
 
-    def createActor(actor: Actor): ActorRef = {
-      system.actorOf(Props(actor))
-    }
-
-    val archivist = createActor(new Archivist(new Shelf(initialInspirations)))
+    val archivist = system.actorOf(Props(new Archivist(new Shelf(initialInspirations))))
     new Gr8craft(createSupervisor(system, twitterService, tweetInterval, archivist))
   }
 }
