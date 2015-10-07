@@ -19,8 +19,6 @@ case object Skip extends Message
 
 case class SuccessfullyTweeted(inspiration: Inspiration) extends Message
 
-case class FailedToTweet(inspiration: Inspiration) extends Message
-
 case class AddInspiration(inspiration: Inspiration) extends Message
 
 case class Inspire(inspiration: Inspiration) extends Message

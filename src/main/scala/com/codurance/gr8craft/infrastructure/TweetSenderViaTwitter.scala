@@ -10,27 +10,22 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 class TweetSenderViaTwitter(twitter: Twitter) extends TweetSender with Logging {
-  override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
+  override def tweet(tweet: Tweet, successAction: () => Unit): Unit = {
     log.info(s"sending tweet to Twitter: $tweet")
 
     Future {
       twitter.updateStatus(tweet.toString)
-    }.onComplete(completeTweeting(successAction, failureAction))
+    }.onComplete(completeTweeting(successAction))
   }
 
-  private def completeTweeting(successAction: () => Unit, failureAction: () => Unit): (Try[Status]) => Unit = {
+  private def completeTweeting(successAction: () => Unit): (Try[Status]) => Unit = {
     val completeTweeting: (Try[Status]) => Unit = {
       case Success(tweetSend) =>
         log.info(s"successfully tweeted $tweetSend.getText()")
         successAction.apply()
       case Failure(twitterException) =>
         log.error(s"Error while tweeting: ${twitterException.getMessage}", twitterException)
-        failureAction.apply()
     }
     completeTweeting
-  }
-
-  private def logRetrievingMessagesFrom(lastFetched: Option[DirectMessageId]): String = {
-    s" direct messages ${lastFetched.map("after " + _.id).getOrElse("")}"
   }
 }

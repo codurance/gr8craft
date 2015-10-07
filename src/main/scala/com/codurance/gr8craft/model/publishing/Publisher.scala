@@ -14,7 +14,7 @@ class Publisher(tweetSender: TweetSender) extends Actor {
 
   private def tweet(inspiration: Inspiration): Unit = {
     val actorToInform = sender()
-    tweetSender.tweet(new Tweet(inspiration), () => actorToInform ! SuccessfullyTweeted(inspiration), () => actorToInform ! FailedToTweet(inspiration))
+    tweetSender.tweet(new Tweet(inspiration), () => actorToInform ! SuccessfullyTweeted(inspiration))
   }
 
   def addInspirations(messages: List[DirectMessage], actorToInform: ActorRef): Unit = {
