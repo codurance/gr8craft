@@ -14,8 +14,8 @@ import scala.concurrent.duration._
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
 
   private var application: Gr8craft = null
-  private val twitter = createTwitter()
-  private val twitterService = new TwitterApiService(twitter)
+  private val gr8craftTwitter = createTwitter()
+  private val twitterService = new TwitterApiService(gr8craftTwitter)
 
   Before() { _ =>
     deletePreviousDirectMessages()
@@ -44,15 +44,15 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   private def deletePreviousDirectMessages(): Unit = {
-    twitter.getDirectMessages
+    gr8craftTwitter.getDirectMessages
       .asScala
-      .foreach(message => twitter.destroyDirectMessage(message.getId))
+      .foreach(message => gr8craftTwitter.destroyDirectMessage(message.getId))
   }
 
   private def deletePreviousTweets(): Unit = {
-    twitter.getUserTimeline
+    gr8craftTwitter.getUserTimeline
       .asScala
-      .foreach(status => twitter.destroyStatus(status.getId))
+      .foreach(status => gr8craftTwitter.destroyStatus(status.getId))
   }
 
   private def getNewestTweet: Option[Status] = {
@@ -64,23 +64,21 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   private def requestNewestTweet(): Option[Status] = {
-    twitter.getUserTimeline
+    gr8craftTwitter.getUserTimeline
       .asScala
       .headOption
   }
 
   private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
-    eventually(timeout(10.seconds), interval(1.second)) {
-      sender.sendDirectMessage(twitter.getId, directMessage)
-    }
+    sender.sendDirectMessage(gr8craftTwitter.getId, directMessage)
 
     eventually(timeout(10.seconds), interval(1.second)) {
-      getNewestDM(twitter).isDefined shouldBe true
+      requestNewestDirectMessage().isDefined shouldBe true
     }
   }
 
-  private def getNewestDM(twitter: Twitter): Option[DirectMessage] = {
-    twitter.getDirectMessages
+  private def requestNewestDirectMessage(): Option[DirectMessage] = {
+    gr8craftTwitter.getDirectMessages
       .asScala
       .headOption
   }
