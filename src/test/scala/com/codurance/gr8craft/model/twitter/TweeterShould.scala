@@ -10,7 +10,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TweeterShould extends AkkaTest("TweeterShould") with MockFactory with ScalaFutures {
+class TweeterShould extends AkkaTest("TweeterShould") with ScalaFutures {
 
   private val topic: String = "topic"
   private val location: String = "location"

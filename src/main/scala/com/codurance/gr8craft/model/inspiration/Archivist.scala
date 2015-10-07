@@ -3,9 +3,7 @@ package com.codurance.gr8craft.model.inspiration
 import akka.actor.Actor
 import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip}
 
-class Archivist(inspirations: Set[Inspiration]) extends Actor {
-  private val shelf = new Shelf(inspirations)
-
+class Archivist(shelf: Shelf) extends Actor {
   override def receive: Receive = {
     case InspireMe =>
       inspireMe()

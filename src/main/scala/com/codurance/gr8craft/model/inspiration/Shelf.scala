@@ -1,6 +1,6 @@
 package com.codurance.gr8craft.model.inspiration
 
-class Shelf(initialInspirations: Set[Inspiration]) {
+class Shelf(initialInspirations: Set[Inspiration] = Set()) {
   private var usedInspirations: Set[Inspiration] = Set.empty
   private var newInspirations: Set[Inspiration] = initialInspirations
 
