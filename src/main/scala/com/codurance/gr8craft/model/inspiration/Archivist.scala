@@ -16,9 +16,7 @@ class Archivist(shelf: Shelf) extends Actor {
   private def inspireMe(): Unit = {
     val nextInspiration = shelf.next()
 
-    if (nextInspiration.isEmpty)
-      return
-
-    sender() ! Inspire(nextInspiration.get)
+    nextInspiration.foreach(inspiration =>
+      sender() ! Inspire(inspiration))
   }
 }
