@@ -10,7 +10,7 @@ import org.slf4s.Logging
 
 import scala.concurrent.duration.Duration
 
-class ScheduledExecutor(duration: Duration, toBeScheduled: ActorRef) extends Actor with Logging {
+class Supervisor(duration: Duration, toBeScheduled: ActorRef) extends Actor with Logging {
   private val executor: ScheduledExecutorService = newSingleThreadScheduledExecutor()
 
   override def receive: Receive = {
