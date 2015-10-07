@@ -5,8 +5,8 @@ import akka.testkit.TestActorRef
 import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip}
 import com.codurance.gr8craft.util.AkkaTest
 
-class ShelfShould extends AkkaTest("ShelfShould") {
-  private val shelf = TestActorRef(Props(new Shelf(Set.empty)))
+class ArchivistShould extends AkkaTest("ArchivistShould") {
+  private val shelf = TestActorRef(Props(new Archivist(Set.empty)))
   private val inspiration = new Inspiration("topic", "location")
 
   test("return inspiration on the shelf") {
