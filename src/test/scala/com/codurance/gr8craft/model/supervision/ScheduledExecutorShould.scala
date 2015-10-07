@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.scheduling
+package com.codurance.gr8craft.model.supervision
 
 import akka.actor.Props
 import akka.pattern.Patterns.ask

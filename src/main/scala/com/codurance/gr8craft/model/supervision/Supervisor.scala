@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.scheduling
+package com.codurance.gr8craft.model.supervision
 
 import akka.actor.ActorRef
 import akka.persistence.PersistentActor
@@ -6,10 +6,10 @@ import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.{Inspiration, Suggestion}
 import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
-class RegularActions(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
+class Supervisor(tweeter: ActorRef, shelf: ActorRef) extends PersistentActor {
   private var lastFetched: Option[DirectMessageId] = None
 
-  override def persistenceId: String = "RegularActions"
+  override def persistenceId: String = "Supervisor"
 
   override def receiveRecover: Receive = {
     case Triggered(id) =>

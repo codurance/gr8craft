@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.scheduling
+package com.codurance.gr8craft.model.supervision
 
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe
@@ -11,7 +11,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFactory {
+class SupervisorShould extends AkkaTest("SupervisorShould") with MockFactory {
   private val inspiration = Inspiration("topic", "location")
   private val lastId = DirectMessageId(42L)
 
@@ -105,7 +105,7 @@ class RegularActionsShould extends AkkaTest("RegularActionsShould") with MockFac
   }
 
   private def createCurator(): ActorRef = {
-    system.actorOf(Props(new RegularActions(tweeter.ref, shelf.ref)))
+    system.actorOf(Props(new Supervisor(tweeter.ref, shelf.ref)))
   }
 
   private def expectInspirationAddedFrom(text: String): AddInspiration = {

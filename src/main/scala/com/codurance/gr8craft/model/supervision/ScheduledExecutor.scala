@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.scheduling
+package com.codurance.gr8craft.model.supervision
 
 import java.util.concurrent.Executors.newSingleThreadScheduledExecutor
 import java.util.concurrent.ScheduledExecutorService
