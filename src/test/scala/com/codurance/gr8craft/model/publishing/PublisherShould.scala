@@ -12,20 +12,18 @@ import org.scalatest.junit.JUnitRunner
 class PublisherShould extends AkkaTest("PublisherShould") with ScalaFutures {
   private val inspiration = new Inspiration("topic", "location")
 
-  private var twitterRequestSuccessful: Boolean = true
+  private var sendingSuccessful: Boolean = true
 
-  private val twitterService = new TwitterService {
+  private val tweetSender = new TweetSender {
     override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
-      if (twitterRequestSuccessful) successAction.apply() else failureAction.apply()
+      if (sendingSuccessful) successAction.apply() else failureAction.apply()
     }
-
-    override def fetchDirectMessagesAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = {}
   }
 
-  private val publisher = system.actorOf(Props(new Publisher(twitterService)))
+  private val publisher = system.actorOf(Props(new Publisher(tweetSender)))
 
-  test("forward tweets to Twitter") {
-    twitterRequestSuccessful = true
+  test("forward tweets to the TweetSender") {
+    sendingSuccessful = true
 
     publisher ! GoAndTweet(inspiration)
 
@@ -33,7 +31,7 @@ class PublisherShould extends AkkaTest("PublisherShould") with ScalaFutures {
   }
 
   test("informs of unsuccessful tweets") {
-    twitterRequestSuccessful = false
+    sendingSuccessful = false
 
     publisher ! GoAndTweet(inspiration)
 

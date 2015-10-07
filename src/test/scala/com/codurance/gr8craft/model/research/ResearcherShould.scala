@@ -18,10 +18,8 @@ class ResearcherShould extends AkkaTest("ResearcherShould") with ScalaFutures {
 
   private var directMessages: List[DirectMessage] = List()
 
-  private val twitterService = new TwitterService {
-    override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {}
-
-    override def fetchDirectMessagesAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = {
+  private val twitterService = new DirectMessageFetcher {
+    override def fetchAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = {
       successAction.apply(directMessages)
     }
   }

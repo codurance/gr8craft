@@ -2,7 +2,7 @@ package com.codurance.gr8craft.featuresmocked
 
 import com.codurance.gr8craft.Gr8craftFactory._
 import com.codurance.gr8craft.model.inspiration.Inspiration
-import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId, Tweet, TwitterService}
+import com.codurance.gr8craft.model.publishing._
 import com.codurance.gr8craft.util.AkkaSteps
 
 import scala.concurrent.duration._
@@ -10,16 +10,19 @@ import scala.concurrent.duration._
 class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
   private var initialInspirations: Set[Inspiration] = Set()
 
-  private val twitterService = new TwitterService {
-    var directMessages: List[DirectMessage] = List()
+  private val tweetSender = new TweetSender {
     var tweet: String = null
-
-    override def fetchDirectMessagesAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = successAction(directMessages)
 
     override def tweet(tweet: Tweet, successAction: () => Unit, failureAction: () => Unit): Unit = {
       this.tweet = tweet.toString
       successAction.apply()
     }
+  }
+
+  private val directMessageFetcher = new DirectMessageFetcher {
+    var directMessages: List[DirectMessage] = List()
+
+    override def fetchAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = successAction(directMessages)
   }
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
@@ -30,7 +33,7 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
   When( """^the hour is reached$""") {
     () =>
       deletePreviousTweets()
-      createApplication(system, twitterService, initialInspirations, 1.millisecond).startTwitterBot()
+      createApplication(system, tweetSender, directMessageFetcher, initialInspirations, 1.millisecond).startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
@@ -46,19 +49,19 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
 
 
   private def deletePreviousTweets(): Unit = {
-    twitterService.tweet = null
+    tweetSender.tweet = null
   }
 
   private def awaitNewestTweet(): String = {
-    awaitCond(twitterService.tweet != null, 4.second)
-    twitterService.tweet
+    awaitCond(tweetSender.tweet != null, 4.second)
+    tweetSender.tweet
   }
 
   def deletePreviousDirectMessages() = {
-    twitterService.directMessages = List()
+    directMessageFetcher.directMessages = List()
   }
 
   private def sendDirectMessage(sender: String, messageText: String): Unit = {
-    twitterService.directMessages = twitterService.directMessages :+ new DirectMessage(sender, messageText, DirectMessageId(42))
+    directMessageFetcher.directMessages = directMessageFetcher.directMessages :+ new DirectMessage(sender, messageText, DirectMessageId(42))
   }
 }

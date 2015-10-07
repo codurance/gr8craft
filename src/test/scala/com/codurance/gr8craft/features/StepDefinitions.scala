@@ -1,7 +1,7 @@
 package com.codurance.gr8craft.features
 
 import com.codurance.gr8craft.Gr8craftFactory.createApplication
-import com.codurance.gr8craft.infrastructure.TwitterApiService
+import com.codurance.gr8craft.infrastructure.{DirectMessageFetcherViaTwitter, TweetSenderViaTwitter}
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.util.AkkaSteps
@@ -22,7 +22,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   When( """^the hour is reached$""") {
     () =>
       deletePreviousTweets()
-      createApplication(system, new TwitterApiService(gr8craftTwitter), initialInspirations, 1.second).startTwitterBot()
+      createApplication(system, new TweetSenderViaTwitter(gr8craftTwitter), new DirectMessageFetcherViaTwitter(gr8craftTwitter), initialInspirations, 1.second).startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
