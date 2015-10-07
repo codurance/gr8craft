@@ -3,8 +3,6 @@ package com.codurance.gr8craft.model.research
 import akka.actor.ActorRef
 import akka.persistence.PersistentActor
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.inspiration.Suggestion
-import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId}
 
 class Journalist(researcher: ActorRef, archivist: ActorRef) extends PersistentActor {
   private var lastFetched: Option[DirectMessageId] = None

@@ -2,7 +2,6 @@ package com.codurance.gr8craft.model.research
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
-import com.codurance.gr8craft.model.publishing.{DirectMessageFetcher, DirectMessage, DirectMessageId, TweetSender}
 
 class Researcher(directMessagefetcher: DirectMessageFetcher) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"

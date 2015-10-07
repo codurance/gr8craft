@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.supervision
+package com.codurance.gr8craft.model.publishing
 
 import akka.actor.{ActorRef, Kill, Props}
 import akka.testkit.TestProbe

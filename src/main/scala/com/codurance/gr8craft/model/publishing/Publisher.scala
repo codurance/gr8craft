@@ -3,6 +3,7 @@ package com.codurance.gr8craft.model.publishing
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.Inspiration
+import com.codurance.gr8craft.model.research.DirectMessage
 
 class Publisher(tweetSender: TweetSender) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"

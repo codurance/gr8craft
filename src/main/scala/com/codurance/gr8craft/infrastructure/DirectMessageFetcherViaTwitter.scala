@@ -1,8 +1,8 @@
 package com.codurance.gr8craft.infrastructure
 
-import com.codurance.gr8craft.model.publishing._
+import com.codurance.gr8craft.model.research.{DirectMessage, DirectMessageFetcher, DirectMessageId}
 import org.slf4s.Logging
-import twitter4j.{Paging, ResponseList, Status, Twitter}
+import twitter4j.{Paging, ResponseList, Twitter}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global

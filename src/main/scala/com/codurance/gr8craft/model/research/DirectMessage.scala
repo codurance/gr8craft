@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.publishing
+package com.codurance.gr8craft.model.research
 
 case class DirectMessageId(id: Long)
 

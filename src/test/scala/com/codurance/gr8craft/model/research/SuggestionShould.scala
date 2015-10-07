@@ -1,5 +1,6 @@
-package com.codurance.gr8craft.model.inspiration
+package com.codurance.gr8craft.model.research
 
+import com.codurance.gr8craft.model.inspiration.Inspiration
 import org.scalatest.{FunSuite, Matchers}
 
 class SuggestionShould extends FunSuite with Matchers {

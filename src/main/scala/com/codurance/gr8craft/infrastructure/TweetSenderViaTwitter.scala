@@ -1,10 +1,9 @@
 package com.codurance.gr8craft.infrastructure
 
-import com.codurance.gr8craft.model.publishing.{DirectMessage, DirectMessageId, Tweet, TweetSender}
+import com.codurance.gr8craft.model.publishing.{Tweet, TweetSender}
 import org.slf4s.Logging
-import twitter4j.{Paging, ResponseList, Status, Twitter}
+import twitter4j.{Status, Twitter}
 
-import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}

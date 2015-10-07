@@ -1,12 +1,12 @@
 package com.codurance.gr8craft
 
 import akka.actor._
-import com.codurance.gr8craft.infrastructure.{DirectMessageFetcherViaTwitter, TweetSenderViaTwitter}
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
+import com.codurance.gr8craft.infrastructure.{DirectMessageFetcherViaTwitter, TweetSenderViaTwitter}
 import com.codurance.gr8craft.model.inspiration.{Archivist, Inspiration, Shelf}
-import com.codurance.gr8craft.model.publishing.{DirectMessageFetcher, Publisher, TweetSender}
-import com.codurance.gr8craft.model.research.{Journalist, Researcher}
-import com.codurance.gr8craft.model.supervision.{Editor, Supervisor}
+import com.codurance.gr8craft.model.publishing.{Editor, Publisher, TweetSender}
+import com.codurance.gr8craft.model.research.{DirectMessageFetcher, Journalist, Researcher}
+import com.codurance.gr8craft.model.supervision.Supervisor
 
 import scala.concurrent.duration._
 
