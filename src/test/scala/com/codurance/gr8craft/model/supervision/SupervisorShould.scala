@@ -1,4 +1,4 @@
-package com.codurance.gr8craft.model.scheduling
+package com.codurance.gr8craft.model.supervision
 
 import akka.actor.Props
 import akka.pattern.Patterns.ask
@@ -13,16 +13,17 @@ import org.scalatest.junit.JUnitRunner
 import scala.concurrent.duration._
 
 @RunWith(classOf[JUnitRunner])
-class ScheduledExecutorShould extends AkkaTest("ScheduledExecutorShould") with DefaultTimeout with BeforeAndAfterAll with ScalaFutures {
+class SupervisorShould extends AkkaTest("SupervisorShould") with DefaultTimeout with BeforeAndAfterAll with ScalaFutures {
 
-  private val toBeScheduled = new JavaTestKit(system)
-  private val scheduler = TestActorRef(Props(new ScheduledExecutor(1.nanosecond, toBeScheduled.getRef)))
+  private val aCollaborator = new JavaTestKit(system)
+  private val anotherCollaborator = new JavaTestKit(system)
+  private val scheduler = TestActorRef(Props(new Supervisor(1.nanosecond, List(aCollaborator.getRef, anotherCollaborator.getRef))))
 
   override def afterAll() {
     scheduler ! Stop
   }
 
-  test("send trigger text to actor to be scheduled") {
+  test("send trigger to collaborators to be scheduled") {
     scheduler ! Start
 
     ensureTriggerMessageWasSent()
@@ -46,7 +47,8 @@ class ScheduledExecutorShould extends AkkaTest("ScheduledExecutorShould") with D
   }
 
   private def ensureTriggerMessageWasSent(): Unit = {
-    toBeScheduled.expectMsgEquals(1.second, Trigger)
+    aCollaborator.expectMsgEquals(1.second, Trigger)
+    anotherCollaborator.expectMsgEquals(1.second, Trigger)
   }
 
 }

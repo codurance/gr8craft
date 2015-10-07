@@ -1,7 +1,7 @@
 package com.codurance.gr8craft.features
 
 import com.codurance.gr8craft.Gr8craftFactory.createApplication
-import com.codurance.gr8craft.infrastructure.TwitterApiService
+import com.codurance.gr8craft.infrastructure.{DirectMessageFetcherViaTwitter, TweetSenderViaTwitter}
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.util.AkkaSteps
@@ -11,6 +11,9 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
+  private val Timeout = timeout(10.seconds)
+  private val RetryInterval = interval(2.seconds)
+
   private var initialInspirations: Set[Inspiration] = Set()
   private val gr8craftTwitter = createTwitter()
 
@@ -22,7 +25,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   When( """^the hour is reached$""") {
     () =>
       deletePreviousTweets()
-      createApplication(system, new TwitterApiService(gr8craftTwitter), initialInspirations, 1.second).startTwitterBot()
+      createApplication(system, new TweetSenderViaTwitter(gr8craftTwitter), new DirectMessageFetcherViaTwitter(gr8craftTwitter), initialInspirations, 2.seconds).startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
@@ -43,8 +46,9 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
       .foreach(status => gr8craftTwitter.destroyStatus(status.getId))
   }
 
+
   private def awaitNewestTweet(): Option[Status] = {
-    eventually(timeout(10.seconds), interval(1.second)) {
+    eventually(Timeout, RetryInterval) {
       val newestTweet = requestNewestTweet()
       newestTweet.isDefined shouldBe true
       newestTweet
@@ -66,7 +70,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
     sender.sendDirectMessage(gr8craftTwitter.getId, directMessage)
 
-    eventually(timeout(10.seconds), interval(1.second)) {
+    eventually(Timeout, RetryInterval) {
       requestNewestDirectMessage().isDefined shouldBe true
     }
   }

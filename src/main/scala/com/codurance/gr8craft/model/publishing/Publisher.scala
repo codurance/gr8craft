@@ -1,27 +1,20 @@
-package com.codurance.gr8craft.model.twitter
+package com.codurance.gr8craft.model.publishing
 
 import akka.actor.{Actor, ActorRef}
 import com.codurance.gr8craft.messages._
 import com.codurance.gr8craft.model.inspiration.Inspiration
 
-class Tweeter(twitterService: TwitterService) extends Actor {
+class Publisher(tweetSender: TweetSender) extends Actor {
   private val APPROVED_MODERATOR = "gr8craftmod"
 
   override def receive: Receive = {
     case GoAndTweet(inspiration) =>
       tweet(inspiration)
-    case FetchDirectMessages(lastFetched) =>
-      fetchDirectMessages(lastFetched)
   }
 
   private def tweet(inspiration: Inspiration): Unit = {
     val actorToInform = sender()
-    twitterService.tweet(new Tweet(inspiration), () => actorToInform ! SuccessfullyTweeted(inspiration), () => actorToInform ! FailedToTweet(inspiration))
-  }
-
-  private def fetchDirectMessages(lastFetched: Option[DirectMessageId]): Unit = {
-    val actorToInform = sender()
-    twitterService.fetchDirectMessagesAfter(lastFetched, messages => addInspirations(messages, actorToInform))
+    tweetSender.tweet(new Tweet(inspiration), () => actorToInform ! SuccessfullyTweeted(inspiration), () => actorToInform ! FailedToTweet(inspiration))
   }
 
   def addInspirations(messages: List[DirectMessage], actorToInform: ActorRef): Unit = {
