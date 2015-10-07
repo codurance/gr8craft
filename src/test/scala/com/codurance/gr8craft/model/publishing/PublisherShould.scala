@@ -10,7 +10,7 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class PublisherShould extends AkkaTest("PublisherShould") with ScalaFutures {
-  private val inspiration = new Inspiration("topic", "location")
+  private val inspiration = new InspirationBuilder().build()
 
   private val tweetSender = new TweetSender {
     override def tweet(tweet: Tweet, successAction: () => Unit): Unit = {

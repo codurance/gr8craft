@@ -9,34 +9,34 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ResearcherShould extends AkkaTest("ResearcherShould") with ScalaFutures {
+  private val directMessage = new DirectMessageBuilder().withSender("gr8craftmod").withText("text").build()
+  private val laterDirectMessage = new DirectMessageBuilder().withSender("gr8craftmod").withText("laterText").build()
+  private val foreignMessage: DirectMessage = new DirectMessageBuilder().withSender("someone else").build()
 
-  private val directMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: topic | location: location | contributor: contributor", DirectMessageId(1L))
-  private val laterDirectMessage: DirectMessage = DirectMessage("gr8craftmod", "inspiration: anotherTopic | location: anotherLocation | contributor: anotherContributor", DirectMessageId(2L))
-  private val foreignMessage: DirectMessage = DirectMessage("someone else", "inspiration: topic | location: location | contributor: contributor", DirectMessageId(3L))
-  private val lastRequested = DirectMessageId(42L)
+  private val lastRequested = Some(DirectMessageId(42))
 
-  private var directMessages: List[DirectMessage] = List()
+  private val directMessageFetcher = new DirectMessageFetcher {
+    var messages: List[DirectMessage] = List()
 
-  private val twitterService = new DirectMessageFetcher {
     override def fetchAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit): Unit = {
-      successAction.apply(directMessages)
+      successAction.apply(messages)
     }
   }
 
-  private val researcher = system.actorOf(Props(new Researcher(twitterService)))
+  private val researcher = system.actorOf(Props(new Researcher(directMessageFetcher)))
 
   test("don't accept direct messages that do not come from the moderator") {
-    directMessages = List(foreignMessage)
+    directMessageFetcher.messages = List(foreignMessage)
 
-    researcher ! FetchDirectMessages(Some(lastRequested))
+    researcher ! FetchDirectMessages(lastRequested)
 
     expectNoMsg()
   }
 
   test("fetch direct messages sent from the moderator") {
-    directMessages = List(directMessage, laterDirectMessage)
+    directMessageFetcher.messages = List(directMessage, laterDirectMessage)
 
-    researcher ! FetchDirectMessages(Some(lastRequested))
+    researcher ! FetchDirectMessages(lastRequested)
 
     expectMsg(AddDirectMessage(directMessage))
     expectMsg(AddDirectMessage(laterDirectMessage))

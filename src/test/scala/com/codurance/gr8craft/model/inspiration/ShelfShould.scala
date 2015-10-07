@@ -1,11 +1,11 @@
 package com.codurance.gr8craft.model.inspiration
 
+import com.codurance.gr8craft.model.publishing.InspirationBuilder
 import org.scalatest.{FunSuite, Matchers}
 
 class ShelfShould extends FunSuite with Matchers {
-
-  private val inspiration = Inspiration("topic", "location")
-  private val laterInspiration = Inspiration("laterTopic", "laterLocation")
+  private val inspiration = new InspirationBuilder().withTopic("topic").build()
+  private val laterInspiration = new InspirationBuilder().withTopic("laterTopic").build()
 
   private val shelf = new Shelf()
 

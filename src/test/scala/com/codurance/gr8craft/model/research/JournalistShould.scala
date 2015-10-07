@@ -13,9 +13,9 @@ class JournalistShould extends AkkaTest("JournalistShould") with MockFactory {
   private val lastId = DirectMessageId(42L)
 
   private val textOfDirectMessage = "inspiration: DDD | location: http://t.co/lqJDZlGcJE | contributor: @gr8contributor"
-  private val directMessage = DirectMessage("sender", textOfDirectMessage, lastId)
+  private val directMessage = new DirectMessageBuilder().withText(textOfDirectMessage).withId(lastId).build()
   private val textOfLaterDirectMessage = "inspiration: Another | location: url | contributor: @anotherContributor"
-  private val laterDirectMessage = DirectMessage("sender", textOfLaterDirectMessage, lastId)
+  private val laterDirectMessage = new DirectMessageBuilder().withText(textOfLaterDirectMessage).build()
 
   private val archivist = TestProbe()
   private val researcher = TestProbe()

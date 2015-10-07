@@ -11,7 +11,7 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class EditorShould extends AkkaTest("EditorShould") with MockFactory {
-  private val inspiration = Inspiration("topic", "location")
+  private val inspiration = new InspirationBuilder().build()
 
   private val archivist = TestProbe()
   private val publisher = TestProbe()
