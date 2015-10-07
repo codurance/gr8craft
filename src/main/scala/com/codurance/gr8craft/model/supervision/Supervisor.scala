@@ -11,12 +11,15 @@ import org.slf4s.Logging
 import scala.concurrent.duration.Duration
 
 class Supervisor(duration: Duration, collaborators: List[ActorRef]) extends Actor with Logging {
-  private val executor: ScheduledExecutorService = newSingleThreadScheduledExecutor()
+  private val executor = newSingleThreadScheduledExecutor()
 
   override def receive: Receive = {
-    case Start => schedule()
-    case Stop => shutdown()
-    case IsTerminated => sender() ! isTerminated
+    case Start =>
+      schedule()
+    case Stop =>
+      shutdown()
+    case IsTerminated =>
+      sender() ! isTerminated
   }
 
   private def schedule() {
@@ -30,7 +33,7 @@ class Supervisor(duration: Duration, collaborators: List[ActorRef]) extends Acto
     executor.scheduleAtFixedRate(createRunnable(collaborator), 0, duration.length, duration.unit)
   }
 
-  private def createRunnable(collaborator: ActorRef): Runnable with Object {def run(): Unit} = {
+  private def createRunnable(collaborator: ActorRef): Runnable = {
     new Runnable {
       def run() = collaborator ! Trigger
     }
