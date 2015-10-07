@@ -56,7 +56,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   private def getNewestTweet: Option[Status] = {
-    eventually(timeout(3.seconds), interval(1.second)) {
+    eventually(timeout(10.seconds), interval(1.second)) {
       val newestTweet = requestNewestTweet()
       newestTweet.isDefined shouldBe true
       newestTweet
@@ -70,11 +70,11 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   }
 
   private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
-    eventually(timeout(3.seconds), interval(1.second)) {
+    eventually(timeout(10.seconds), interval(1.second)) {
       sender.sendDirectMessage(twitter.getId, directMessage)
     }
 
-    eventually(timeout(3.seconds), interval(1.second)) {
+    eventually(timeout(10.seconds), interval(1.second)) {
       getNewestDM(twitter).isDefined shouldBe true
     }
   }
