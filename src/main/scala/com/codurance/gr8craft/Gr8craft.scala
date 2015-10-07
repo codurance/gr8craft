@@ -8,10 +8,6 @@ class Gr8craft(scheduler: ActorRef) {
   def startTwitterBot() {
     scheduler ! Start
   }
-
-  def stop() {
-    scheduler ! Stop
-  }
 }
 
 object Gr8craft {

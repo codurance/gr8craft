@@ -21,10 +21,4 @@ class Gr8craftShould extends FunSuite with MockFactory {
 
     scheduler.expectMsgEquals(1.second, Start)
   }
-
-  test("stop the execution") {
-    applicationRunner.stop()
-
-    scheduler.expectMsgEquals(1.second, Stop)
-  }
 }
