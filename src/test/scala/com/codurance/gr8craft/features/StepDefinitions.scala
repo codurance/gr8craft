@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
-  private val gr8craftTwitter = createTwitter()
   private var initialInspirations: Set[Inspiration] = Set()
+  private val gr8craftTwitter = createTwitter()
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
@@ -27,20 +27,15 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
     (expectedTweet: String) =>
-      getNewestTweet.map(_.getText).get shouldEqual expectedTweet
+      awaitNewestTweet().map(_.getText).get shouldEqual expectedTweet
   }
 
   Given( """^"([^"]*)" sends a DM to gr8craft with the text "([^"]*)"$""") {
-    (sender: String, directMessage: String) =>
+    (sender: String, messageText: String) =>
       deletePreviousDirectMessages()
-      sendDirectMessage(createTwitter(sender), directMessage)
+      sendDirectMessage(createTwitter(sender), messageText)
   }
 
-  private def deletePreviousDirectMessages(): Unit = {
-    gr8craftTwitter.getDirectMessages
-      .asScala
-      .foreach(message => gr8craftTwitter.destroyDirectMessage(message.getId))
-  }
 
   private def deletePreviousTweets(): Unit = {
     gr8craftTwitter.getUserTimeline
@@ -48,7 +43,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
       .foreach(status => gr8craftTwitter.destroyStatus(status.getId))
   }
 
-  private def getNewestTweet: Option[Status] = {
+  private def awaitNewestTweet(): Option[Status] = {
     eventually(timeout(10.seconds), interval(1.second)) {
       val newestTweet = requestNewestTweet()
       newestTweet.isDefined shouldBe true
@@ -60,6 +55,12 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
     gr8craftTwitter.getUserTimeline
       .asScala
       .headOption
+  }
+
+  private def deletePreviousDirectMessages(): Unit = {
+    gr8craftTwitter.getDirectMessages
+      .asScala
+      .foreach(message => gr8craftTwitter.destroyDirectMessage(message.getId))
   }
 
   private def sendDirectMessage(sender: Twitter, directMessage: String): Unit = {
