@@ -1,6 +1,5 @@
 package com.codurance.gr8craft.features
 
-import com.codurance.gr8craft.Gr8craft
 import com.codurance.gr8craft.Gr8craftFactory.createApplication
 import com.codurance.gr8craft.infrastructure.TwitterApiService
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
@@ -12,24 +11,18 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
-
-  private var application: Gr8craft = null
   private val gr8craftTwitter = createTwitter()
-  private val twitterService = new TwitterApiService(gr8craftTwitter)
-
-  Before() { _ =>
-    deletePreviousDirectMessages()
-  }
+  private var initialInspirations: Set[Inspiration] = null
 
   Given( """^the next inspiration on the shelf about "([^"]*)" can be found at "([^"]*)"$""") {
     (topic: String, location: String) =>
-      application = createApplication(system, twitterService, Set(new Inspiration(topic, location)), 1.second)
+      initialInspirations = Set(new Inspiration(topic, location))
   }
 
   When( """^the hour is reached$""") {
-    deletePreviousTweets()
     () =>
-      application.startTwitterBot()
+      deletePreviousTweets()
+      createApplication(system, new TwitterApiService(gr8craftTwitter), initialInspirations, 1.second).startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") {
@@ -39,7 +32,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
 
   Given( """^"([^"]*)" sends a DM to gr8craft with the text "([^"]*)"$""") {
     (sender: String, directMessage: String) =>
-      application = createApplication(system, twitterService, tweetInterval = 1.second)
+      deletePreviousDirectMessages()
       sendDirectMessage(createTwitter(sender), directMessage)
   }
 
