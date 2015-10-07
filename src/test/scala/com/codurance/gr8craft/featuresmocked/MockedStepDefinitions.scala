@@ -50,7 +50,7 @@ class MockedStepDefinitions extends AkkaSteps("MockedStepDefinitions") {
   }
 
   private def awaitNewestTweet(): String = {
-    awaitCond(twitterService.tweet != null, 1.second)
+    awaitCond(twitterService.tweet != null, 4.second)
     twitterService.tweet
   }
 
