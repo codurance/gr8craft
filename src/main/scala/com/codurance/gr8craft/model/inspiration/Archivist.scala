@@ -4,37 +4,23 @@ import akka.actor.Actor
 import com.codurance.gr8craft.messages.{AddInspiration, Inspire, InspireMe, Skip}
 
 class Archivist(inspirations: Set[Inspiration]) extends Actor {
-
-  private var usedInspirations: Set[Inspiration] = Set.empty
-  private var newInspirations: Set[Inspiration] = inspirations
+  private val shelf = new Shelf(inspirations)
 
   override def receive: Receive = {
     case InspireMe =>
       inspireMe()
     case Skip =>
-      takeNextInspirationFromShelf()
+      shelf.next()
     case AddInspiration(inspiration: Inspiration) =>
-      newInspirations = newInspirations + inspiration
+      shelf.addInspiration(inspiration)
   }
 
   private def inspireMe(): Unit = {
-    val nextInspiration = takeNextInspirationFromShelf()
+    val nextInspiration = shelf.next()
 
     if (nextInspiration.isEmpty)
       return
 
     sender() ! Inspire(nextInspiration.get)
   }
-
-  private def takeNextInspirationFromShelf(): Option[Inspiration] = {
-    val nextInspiration = newInspirations.headOption
-
-    if (nextInspiration.isDefined) {
-      newInspirations = newInspirations.tail
-      usedInspirations = usedInspirations + nextInspiration.get
-    }
-
-    nextInspiration
-  }
-
 }
