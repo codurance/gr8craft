@@ -17,7 +17,6 @@ case object InspireMe extends Message
 
 case object Skip extends Message
 
-
 case class AddInspiration(inspiration: Inspiration) extends Message
 
 case class Inspire(inspiration: Inspiration) extends Message

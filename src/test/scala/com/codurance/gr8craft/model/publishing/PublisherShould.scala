@@ -26,6 +26,6 @@ class PublisherShould extends AkkaTest("PublisherShould") with ScalaFutures {
 
     awaitCond(tweetSender.sentTweet != null)
 
-    tweetSender.sentTweet shouldEqual new Tweet(inspiration)
+    tweetSender.sentTweet.toString shouldEqual new Tweet(inspiration).toString
   }
 }
