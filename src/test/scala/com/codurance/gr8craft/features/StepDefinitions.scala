@@ -25,7 +25,7 @@ class StepDefinitions extends AkkaSteps("StepDefinitions") {
   When( """^the hour is reached$""") {
     () =>
       deletePreviousTweets()
-      createApplication(system, new TweetSenderViaTwitter(gr8craftTwitter), new DirectMessageFetcherViaTwitter(gr8craftTwitter), initialInspirations, 3.seconds).startTwitterBot()
+      createApplication(system, new TweetSenderViaTwitter(gr8craftTwitter), new DirectMessageFetcherViaTwitter(gr8craftTwitter), initialInspirations, 5.seconds).startTwitterBot()
   }
 
   Then( """^gr8craft tweets "([^"]*)"$""") {

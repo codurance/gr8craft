@@ -17,7 +17,7 @@ class SupervisorShould extends AkkaTest("SupervisorShould") with DefaultTimeout 
 
   private val aCollaborator = new JavaTestKit(system)
   private val anotherCollaborator = new JavaTestKit(system)
-  private val scheduler = TestActorRef(Props(new Supervisor(1.nanosecond, List(aCollaborator.getRef, anotherCollaborator.getRef))))
+  private val scheduler = TestActorRef(Props(new Supervisor(1.millisecond, List(aCollaborator.getRef, anotherCollaborator.getRef))))
 
   override def afterAll() {
     scheduler ! Stop
