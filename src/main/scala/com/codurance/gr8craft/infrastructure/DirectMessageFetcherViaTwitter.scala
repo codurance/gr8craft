@@ -10,7 +10,7 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 class DirectMessageFetcherViaTwitter(twitter: Twitter) extends DirectMessageFetcher with Logging {
-  private val DEFAULT_PAGING = new DirectMessageId(1)
+  private val DefaultPaging = new DirectMessageId(1)
 
   override def fetchAfter(lastFetched: Option[DirectMessageId], successAction: (List[DirectMessage]) => Unit) = {
     log.info(s"retrieving" + logRetrievingMessagesFrom(lastFetched))
@@ -22,7 +22,7 @@ class DirectMessageFetcherViaTwitter(twitter: Twitter) extends DirectMessageFetc
 
   private def createPaging(lastFetched: Option[DirectMessageId]): Paging = {
     val paging = new Paging()
-    paging.setSinceId(lastFetched.getOrElse(DEFAULT_PAGING).id)
+    paging.setSinceId(lastFetched.getOrElse(DefaultPaging).id)
     paging
   }
 

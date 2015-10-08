@@ -9,6 +9,7 @@ class Suggestion(toParse: String) {
     toParse match {
       case PatternForNewInspirations(topic, location, contributor) =>
         Some(new Inspiration(topic, location, Some(contributor)))
-      case _ => None
+      case _ =>
+        None
     }
 }
