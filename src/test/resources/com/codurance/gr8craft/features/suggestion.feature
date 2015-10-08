@@ -8,7 +8,7 @@ Feature: Receiving and reviewing suggestions
   and approve them to be included in the hourly tweets
 
   Scenario: Accepting submissions
-    Given "gr8craftmod" sends a DM to gr8craft with the text "inspiration: Technical Debt | location: https://t.co/vwgxUE6Dg4 | contributor: @gr8contributor"
+    Given "gr8craftmod" sends a DM to gr8craft with the text "inspiration: Technical Debt | location: https://t.co/ycPHNmQHUA | contributor: @gr8contributor"
     And the hour is reached
     When the hour is reached
-    Then gr8craft tweets "Your hourly recommended inspiration about Technical Debt: https://t.co/vwgxUE6Dg4 (via @gr8contributor)"
+    Then gr8craft tweets "Your hourly recommended inspiration about Technical Debt: https://t.co/ycPHNmQHUA (via @gr8contributor)"
