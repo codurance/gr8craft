@@ -47,8 +47,8 @@ class SupervisorShould extends AkkaTest("SupervisorShould") with DefaultTimeout 
   }
 
   private def ensureTriggerMessageWasSent(): Unit = {
-    aCollaborator.expectMsgEquals(1.second, Trigger)
-    anotherCollaborator.expectMsgEquals(1.second, Trigger)
+    aCollaborator.expectMsgEquals(3.second, Trigger)
+    anotherCollaborator.expectMsgEquals(3.second, Trigger)
   }
 
 }

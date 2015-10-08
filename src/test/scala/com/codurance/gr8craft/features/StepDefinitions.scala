@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class StepDefinitions extends AkkaSteps("StepDefinitions") {
-  private val Timeout = timeout(10.seconds)
-  private val RetryInterval = interval(2.seconds)
+  private val Timeout = timeout(20.seconds)
+  private val RetryInterval = interval(5.seconds)
 
   private var initialInspirations: Set[Inspiration] = Set()
   private val gr8craftTwitter = createTwitter()
