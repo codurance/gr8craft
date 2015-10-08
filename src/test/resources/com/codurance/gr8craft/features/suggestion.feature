@@ -9,6 +9,5 @@ Feature: Receiving and reviewing suggestions
 
   Scenario: Accepting submissions
     Given "gr8craftmod" sends a DM to gr8craft with the text "inspiration: Technical Debt | location: https://t.co/ycPHNmQHUA | contributor: @gr8contributor"
-    And the hour is reached
     When the hour is reached
     Then gr8craft tweets "Your hourly recommended inspiration about Technical Debt: https://t.co/ycPHNmQHUA (via @gr8contributor)"
