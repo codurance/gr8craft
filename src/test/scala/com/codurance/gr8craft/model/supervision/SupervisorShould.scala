@@ -31,7 +31,7 @@ class SupervisorShould extends AkkaTest("SupervisorShould") with DefaultTimeout 
     ensureSchedulerIsTerminatedIs(false)
   }
 
-  test("stop the scheduler") {
+  test("stop the supervisor") {
     scheduler ! Start
     ensureTriggerMessageWasSent()
 
