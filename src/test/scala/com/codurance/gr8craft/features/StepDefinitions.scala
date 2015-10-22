@@ -1,6 +1,6 @@
 package com.codurance.gr8craft.features
 
-import com.codurance.gr8craft.Gr8craftFactory.createApplication
+import com.codurance.gr8craft.Gr8craft.createApplication
 import com.codurance.gr8craft.infrastructure.TwitterFactoryWithConfiguration.createTwitter
 import com.codurance.gr8craft.infrastructure.{DirectMessageFetcherViaTwitter, TweetSenderViaTwitter}
 import com.codurance.gr8craft.model.inspiration.Inspiration

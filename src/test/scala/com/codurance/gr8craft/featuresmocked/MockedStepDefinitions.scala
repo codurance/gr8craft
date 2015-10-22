@@ -1,6 +1,6 @@
 package com.codurance.gr8craft.featuresmocked
 
-import com.codurance.gr8craft.Gr8craftFactory._
+import com.codurance.gr8craft.Gr8craft.createApplication
 import com.codurance.gr8craft.model.inspiration.Inspiration
 import com.codurance.gr8craft.model.publishing._
 import com.codurance.gr8craft.model.research.{DirectMessage, DirectMessageFetcher, DirectMessageId}
