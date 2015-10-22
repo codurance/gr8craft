@@ -17,6 +17,12 @@ jdbc-connection {
   url = "XXX"
 }
 
+akka {
+  test {
+    single-expect-default = 1s
+  }
+}
+
 twitter4j {
   consumerKey = XXX
   consumerSecret = XXX
