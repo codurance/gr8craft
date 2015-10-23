@@ -25,8 +25,7 @@ class Supervisor(duration: Duration, collaborators: List[ActorRef]) extends Acto
   private def schedule() {
     log.info(s"Scheduling every $duration.")
 
-    collaborators.foreach(collaborator =>
-      schedule(collaborator))
+    collaborators.foreach(schedule)
   }
 
   private def schedule(collaborator: ActorRef): ScheduledFuture[_] = {
